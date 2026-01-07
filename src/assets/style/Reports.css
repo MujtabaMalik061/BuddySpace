@@ -1,0 +1,230 @@
+.report-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 4px 10px;
+  background-color: #fff;
+  border: 2px solid #0265a1;
+  border-radius: 25px;
+  cursor: pointer;
+  color: #0265a1;
+  transition: 0.3s;
+}
+
+.report-action-btn span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.report-action-btn:hover span {
+  transform: scale(1.1);
+}
+
+.report-severity {
+  min-width: 40px;
+  width: 95px;
+  display: block;
+  text-align: center;
+  padding: 4px;
+  border-radius: 20px;
+}
+
+.report-severity-Low {
+  color: #1447e6;
+  background-color: #dbeafe;
+}
+
+.report-severity-Medium {
+  color: #a65f00;
+  background-color: #fef9c2;
+}
+
+.report-severity-High {
+  color: #c10007;
+  background-color: #ffe2e2;
+}
+
+/* ========== Reports Details Modal ============ */
+
+.report-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.report-detail-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.report-detail-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.report-detail-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: 0.3s;
+  padding: 1px 7px;
+  border-radius: 3px;
+}
+
+.report-detail-close:hover {
+  background-color: #00000014;
+}
+
+.report-detail-content {
+  margin-bottom: 28px;
+}
+
+.report-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 32px;
+}
+
+.report-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.report-detail-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.report-detail-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.report-detail-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.report-detail-badge-medium {
+  background: #fff4cc;
+  color: #a16207;
+}
+
+.report-detail-reason {
+  margin-top: 24px;
+}
+
+.report-detail-reason-text {
+  margin-top: 8px;
+  font-size: 15px;
+  color: #111827;
+  line-height: 1.5;
+}
+
+.report-detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.report-detail-btn {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.3s;
+  width: 100%;
+  min-width: fit-content;
+}
+
+.report-detail-btn-outline {
+  background: #ffffff;
+  color: #0f4c81;
+  border-color: #0f4c81;
+}
+
+.report-detail-btn-outline:hover {
+  background: #f0f7ff;
+}
+
+.report-detail-btn-primary {
+  background: linear-gradient(180deg, #0265a1 0%, #0288d1 100%);
+  color: #ffffff;
+  border: none;
+}
+
+.report-detail-btn-primary:hover {
+  background: linear-gradient(180deg, #014976 0%, #0280c3 100%);
+}
+
+/* ========== Responsive Style ============ */
+
+@media (max-width: 768px) {
+  .report-action-btn {
+    font-size: clamp(10px, 2vw, 16px);
+    gap: clamp(4px, 2vw, 7px);
+    padding: clamp(1px, 2vw, 4px) clamp(6px, 2vw, 10px);
+  }
+
+  .report-action-btn svg {
+    height: clamp(12px, 2vw, 24px);
+    width: clamp(12px, 2vw, 24px);
+  }
+
+  .report-detail-header {
+    margin-bottom: clamp(20px, 2vw, 24px);
+  }
+
+  .report-detail-title {
+    font-size: clamp(12px, 2vw, 22px);
+  }
+
+  .report-detail-subtitle {
+    font-size: clamp(12px, 2vw, 14px);
+  }
+
+  .report-detail-grid {
+    gap: clamp(25px, 2vw, 32px);
+  }
+
+  .report-detail-label,
+  .report-detail-value {
+    font-size: clamp(12px, 2vw, 15px);
+  }
+
+  .report-detail-badge {
+    padding: clamp(3px, 2vw, 6px) clamp(12px, 2vw, 14px);
+    font-size: clamp(10px, 2vw, 14px);
+  }
+
+  .report-detail-reason-text {
+    font-size: clamp(12px, 2vw, 15px);
+  }
+
+  .report-detail-footer {
+    gap: clamp(10px, 2vw, 14px);
+  }
+
+  .report-detail-btn {
+    padding: clamp(7px, 2vw, 10px) clamp(10px, 2vw, 18px);
+    font-size: clamp(10px, 2vw, 14px);
+    border-radius: clamp(5px, 2vw, 8px);
+  }
+}

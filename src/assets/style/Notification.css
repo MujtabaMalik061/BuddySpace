@@ -1,0 +1,75 @@
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+.notification-header > .customers-section-title {
+  margin-bottom: 0px;
+}
+
+.notification-header-action-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.notification-header-action-btn {
+  border: 2px solid #0265a1;
+  color: #0265a1;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px 7px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.notification-header-action-btn:hover {
+  transform: scale(1.03);
+}
+
+.notification-user-container {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+
+.notification-user-profile-container {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  color: #6a7282;
+}
+
+.notification-user-profile-container > img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .notification-header-action-btn {
+    padding: clamp(4px, 2vw, 8px) clamp(7px, 2vw, 14px) clamp(3px, 2vw, 7px)
+      clamp(6px, 2vw, 12px);
+    gap: clamp(6px, 2vw, 10px);
+    font-size: clamp(8px, 2vw, 12px);
+  }
+
+  .notification-header-action-btn svg{
+    height: clamp(12px , 2vw, 24px);
+    width: clamp(12px , 2vw, 24px);
+  }
+}

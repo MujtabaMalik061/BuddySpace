@@ -1,0 +1,116 @@
+.modal-overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0000005e;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  width: 420px;
+  max-width: 95vw;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.logout-modal {
+  max-width: 98vw;
+  width: 500px;
+  text-align: center;
+}
+
+.logout-icon {
+  color: #0265a1;
+  margin-bottom: 20px;
+}
+
+.logout-title {
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #000000;
+}
+
+.logout-text {
+  color: #111827;
+  margin-bottom: 36px;
+}
+
+.logout-actions {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.logout-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  padding: 16px 28px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-action-btn:hover {
+  gap: 14px;
+}
+
+.logout-action-primary {
+  background: #f6f6f6bd;
+  color: #000;
+  box-shadow: 0 0px 16px rgb(0 0 0 / 21%);
+}
+
+.logout-action-secondary {
+  background: #0265a1;
+  color: #ffffff;
+  box-shadow: 0 0px 18px #0264a157;
+}
+
+/* ====== Responsive Style ====== */
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: clamp(12px, 2vw, 24px);
+  }
+
+  .logout-icon {
+    margin-bottom: clamp(13px, 2vw, 20px);
+  }
+
+  .logout-title {
+    font-size: clamp(14px, 2vw, 32px);
+  }
+
+  .logout-text {
+    font-size: clamp(12px, 2vw, 20px);
+    margin-bottom: clamp(20px, 2vw, 32px);
+  }
+
+  .logout-actions {
+    gap: clamp(14px, 2vw, 24px);
+  }
+
+  .logout-action-btn {
+    padding: clamp(12px, 2vw, 16px) clamp(16px, 2vw, 28px);
+    border-radius: 999px;
+    font-size: clamp(12px, 2vw, 18px);
+  }
+
+  .logout-action-btn svg {
+    height: clamp(12px, 2vw, 24px);
+    width: clamp(12px, 2vw, 24px);
+  }
+}
