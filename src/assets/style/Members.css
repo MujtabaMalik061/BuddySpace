@@ -1,0 +1,202 @@
+/* ========= MEMBERS PAGE ========= */
+.members-page-root {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  color: var(--text-primary);
+}
+
+.members-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.members-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.members-page-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.members-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.members-card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.members-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.members-card-title svg {
+  color: var(--primary);
+}
+
+.members-card-content {
+  padding: 0.5rem 1.5rem;
+}
+
+.members-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.members-row:last-child {
+  border-bottom: none;
+}
+
+.members-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.members-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--bg-muted);
+  border: 1px solid var(--border-default);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.members-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.members-user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.members-user-email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.members-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.members-role {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.members-role-owner {
+  background-color: var(--bg-muted);
+  color: var(--primary);
+}
+
+.members-role-admin {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+}
+
+.members-role-member {
+  background-color: var(--secondary);
+  color: var(--text-inverse);
+}
+
+.members-joined {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: none;
+}
+
+.members-action-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+
+  border: none;
+  background-color: transparent;
+  color: var(--text-muted);
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.members-action-button:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.members-dialog-content {
+  border-radius: 16px;
+}
+
+.members-dialog-input {
+  padding-left: 2.25rem;
+}
+
+.members-invite-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  padding: 0.65rem 1.1rem;
+  border-radius: 12px;
+
+  background-color: var(--primary);
+  color: var(--text-inverse);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.members-invite-button:hover {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-hover-sm);
+  transform: translateY(-1px);
+}
+
+
+/* ================= Responsive ================= */
+
+@media (min-width: 640px) {
+  .members-joined {
+    display: block;
+  }
+}

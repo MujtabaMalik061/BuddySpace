@@ -1,18 +1,20 @@
 .mobile-topbar-container {
-  position: absolute;
+  position: sticky;
   top: 0px;
   left: 0px;
   width: 100vw;
-  background: linear-gradient(180deg, #0265a1 0%, #0288d1 100%) !important;
+  background: var(--primary);
   display: none;
   align-items: center;
   justify-content: space-between;
   padding: 12px;
+  z-index: 1;
 }
 
 .mobile-topbar-container > .sidebar-logo {
   height: 36px;
   width: 36px;
+  object-fit: contain;
 }
 
 .mobile-topbar-container > button {
@@ -29,24 +31,11 @@
   width: 260px;
   height: 100vh;
   transition: 0.3s;
-  background-color: #ffffff;
+  background-color: var(--bg-main);
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e4e7ec;
   z-index: 100;
-  overflow-y: auto;
-}
-
-.sidebar-desktop-closed {
-  width: 65px;
-}
-
-.main-content-half-sidebar {
-  margin-left: 65px;
-}
-
-.mobile-sidebar-container {
-  display: none;
 }
 
 .sidebar-header {
@@ -57,42 +46,25 @@
   padding: 15px 10px;
 }
 .sidebar-header > div {
-  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  gap: 5px;
 }
 
 .sidebar-logo {
+  width: 50px;
   height: 50px;
 }
 
 .sidebar-close-btn {
-  font-size: 0px;
-  border: 1px solid #0367a3;
-  color: #0367a3;
-  background: #0367a317;
-  border-radius: 3px;
-  cursor: pointer;
-  padding: 3px;
-}
-
-.sidebar-close-btn > span {
-  display: inline-block;
-  transition: 0.3s;
-}
-
-.sidebar-close-btn:hover > .right-arrow {
-  transform: translateX(2px);
-}
-
-.sidebar-close-btn:hover > .left-arrow {
-  transform: translateX(-2px);
-}
-
-.mobile-sidebar-close-btn {
   display: none;
-}
-
-.desktop-sidebar-close-btn {
-  display: block;
+  font-size: 0px;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: #f5c4001a;
+  border-radius: 3px;
 }
 
 .sidebar-divider {
@@ -101,7 +73,7 @@
 }
 
 .sidebar-menu {
-  padding: 16px;
+  padding: 16px 0px;
   flex: 1;
 }
 
@@ -110,21 +82,32 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 8px;
   margin-bottom: 6px;
   cursor: pointer;
-  color: #344054;
+  color: var(--text-secondary);
   transition: background 0.2s ease;
 }
 
 .sidebar-item:hover {
-  background-color: #f5f5f5;
+  color: var(--text-primary);
+  background-color: var(--bg-hover-strong);
 }
 
 .sidebar-item-active {
-  background: linear-gradient(180deg, #0265a1 0%, #0288d1 100%) !important;
-  color: #fff !important;
+  background-color: #2563eb24 !important;
+  color: var(--primary) !important;
   position: relative;
+}
+
+.sidebar-item-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0px;
+  bottom: 0px;
+  width: 4px;
+  background-color: var(--primary);
+  border-radius: 0 8px 8px 0;
 }
 
 .sidebar-icon {
@@ -143,46 +126,33 @@
 
 .sidebar-logout-btn {
   width: 100%;
-  background-color: transparent;
+  background-color: var(--primary);
+  color: var(--text-inverse);
   border: none;
-  padding: 10px;
+  padding: 6px;
   border-radius: 8px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  justify-content: start;
-  gap: 14px;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.sidebar-logout-btn:hover {
-  background-color: #ff000021;
-  color: #e90e0e;
-}
-
 .sidebar-logout-btn > span {
-  transition: 0.3s;
+  transform: rotate(180deg);
 }
 
-.sidebar-logout-btn:hover > span {
-  transform: scale(1.1);
+.sidebar-logout-btn:hover {
+  gap: 12px;
+  background-color: var(--primary-hover);
 }
 
 @media (max-width: 768px) {
-  .desktop-sidebar-container {
-    display: none;
-  }
-  .mobile-sidebar-container {
-    display: flex;
-  }
-  .main-content-half-sidebar {
-    margin-left: 0px !important;
-  }
-  .main-content {
-    margin-top: 60px;
-    margin-left: 0px !important;
+  .sidebar-close-btn {
+    display: block;
   }
   .sidebar-closed {
     left: -260px;
@@ -190,10 +160,11 @@
   .mobile-topbar-container {
     display: flex;
   }
-  .sidebar-logo {
-    height: 50px;
+  .sidebar-header > div {
+    width: fit-content;
   }
-  .sidebar-close-btn {
-    padding: 0px;
+  .sidebar-logo {
+    width: 100px;
+    height: 100px;
   }
 }

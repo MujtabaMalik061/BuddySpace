@@ -1,57 +1,53 @@
 import SiteLogo from "../assets/images/SiteLogo.png";
 import SiteLogoWithText from "../assets/images/SiteLogoWithText.png";
-import AuthBg from "../assets/images/Auth-Bg.png";
+import AuthBg from "../assets/images/AuthBg.png";
+import heroIllustration from "../assets/images/heroIllustration.png";
 
 export const IMAGES = {
   SiteLogo,
   SiteLogoWithText,
   AuthBg,
+  heroIllustration,
 };
 
 export const SidebarMenuItems = [
   {
     name: "Dashboard",
     icon: "LayoutGrid",
-    route: "/",
-    activeAt: "/",
+    route: "/dashboard",
+    activeAt: "/dashboard",
   },
   {
-    name: "All Customers",
+    name: "Workspaces",
+    icon: "FolderOpen",
+    route: "/workspaces",
+    activeAt: "/workspaces",
+    startsWith: ["/workspace"],
+  },
+  {
+    name: "Chat",
+    icon: "MessageCircle",
+    route: "/chat",
+    activeAt: "/chat",
+  },
+  {
+    name: "Collections",
+    icon: "Library",
+    route: "/collections",
+    activeAt: "/collections",
+    startsWith: ["/collection"],
+  },
+  {
+    name: "Members",
     icon: "Users",
-    route: "/customers",
-    activeAt: "/customers",
-    startsWith: ["/customer-details", "/customer/job-details"],
+    route: "/members",
+    activeAt: "/members",
   },
   {
-    name: "All Contractors",
-    icon: "Users",
-    route: "/contractors",
-    activeAt: "/contractors",
-    startsWith: ["/contractor-details", "/contractor/job-details"],
-  },
-  {
-    name: "All Jobs",
-    icon: "Briefcase",
-    route: "/jobs",
-    activeAt: "/jobs",
-    startsWith: ["/job-details"], // ✅ ARRAY
-  },
-  {
-    name: "Reports",
-    icon: "Flag",
-    route: "/reports",
-    activeAt: "/reports",
-  },
-  {
-    name: "Categories",
-    icon: "FolderTree",
-    route: "/categories",
-    activeAt: "/categories",
-  },
-  {
-    name: "Notifications",
-    icon: "Bell",
-    route: "/notifications",
-    activeAt: "/notifications",
+    name: "Settings",
+    icon: "Settings",
+    route: "/settings",
+    activeAt: "/settings",
+    startsWith: ["/settings"],
   },
 ];

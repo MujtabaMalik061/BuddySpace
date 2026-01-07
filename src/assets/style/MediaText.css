@@ -1,0 +1,9 @@
+@media (max-width: 768px) {
+  .padd-duo-60-30-and-16-12 {
+    padding: clamp(30px, 2vw, 60px) clamp(12px, 2vw, 16px) !important;
+  }
+
+  .font-56-25 {
+    font-size: clamp(25px, 2vw, 56px) !important;
+  }
+}

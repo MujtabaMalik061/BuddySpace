@@ -1,11 +1,11 @@
 import React from "react";
-import { Bouncy } from "ldrs/react";
-import "ldrs/react/Bouncy.css";
+import { Spiral } from "ldrs/react";
+import "ldrs/react/Spiral.css";
 
 const Loader = ({
   size = "40",
   className = "loaderWrapper",
-  color = "#0265a1",
+  color = "var(--primary)",
   speed = "1.75",
   stroke = "5",
   style = {
@@ -15,7 +15,7 @@ const Loader = ({
 }) => {
   return (
     <div className={className} style={style}>
-      <Bouncy size={size} speed={speed} stroke={stroke} color={color} />
+      <Spiral size={size} speed={speed} stroke={stroke} color={color} />
     </div>
   );
 };

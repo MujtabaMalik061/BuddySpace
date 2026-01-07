@@ -1,0 +1,227 @@
+/* ========= Login Page Style ========= */
+
+.login-page-root {
+  min-height: 100vh;
+  padding: 1rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.login-page-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: #00000063;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-default);
+  opacity: 0;
+  animation: scale-in 0.4s ease-out 0.15s forwards;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.login-subtitle {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.login-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+
+  font-size: 0.95rem;
+  outline: none;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.login-input::placeholder {
+  color: var(--text-muted);
+}
+
+.login-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.login-password-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-password-wrapper {
+  position: relative;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  color: var(--text-muted);
+  padding: 0.25rem;
+}
+
+.login-password-toggle:hover {
+  color: var(--primary);
+}
+
+.login-forgot-link {
+  background: none;
+  border: none;
+  padding: 0;
+
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.login-forgot-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.login-signup-link {
+  margin-left: 0.25rem;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.login-signup-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.login-submit-button {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+
+  border-radius: 12px;
+  border: none;
+
+  background-color: var(--primary);
+  color: var(--text-inverse);
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+
+  transition: background-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.login-submit-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover-sm);
+}
+
+.login-submit-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ========= ForgetPassword Page Style ========= */
+
+.forgot-back-signin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.forgot-back-signin-btn > span {
+  transition: 0.3s;
+  color: var(--text-primary);
+}
+
+.forgot-back-signin-btn:hover {
+  color: var(--text-primary);
+}
+
+.forgot-back-signin-btn:hover > span {
+  transform: translateX(-3px);
+}
+
+/* ========= Logout Page Style ========= */
