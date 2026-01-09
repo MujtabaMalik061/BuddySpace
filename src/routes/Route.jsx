@@ -39,5 +39,5 @@ export const PublicRoute = () => {
   if (loading)
     return <Loader size="80" style={{ height: "100vh", width: "100vw" }} />;
 
-  return user ? <Navigate to="/dashboard" replace /> : <Outlet />;
+  return user ? <Navigate to="/workspaces" replace /> : <Outlet />;
 };

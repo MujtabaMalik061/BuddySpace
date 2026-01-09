@@ -293,8 +293,8 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  padding: 5px;
-  border-radius: 2px;
+  padding: 4px 5px 4px 8px;
+  border-radius: 3px;
   border: none;
   color: var(--text-inverse);
   background: var(--primary);

@@ -1,16 +1,13 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import {
   AlertTriangle,
   BadgePlus,
-  ChevronDown,
-  ChevronUp,
   LogOut,
-  SendHorizonal,
   Settings,
 } from "lucide-react";
 import TopBar from "./TopBar";
 import Loader from "./Loader";
-import { BackBtn } from "./CustomComponents";
+import { BackBtn, CommentsArea } from "./CustomComponents";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import {
@@ -22,7 +19,6 @@ import {
   handleDropWorkSpace,
 } from "../services/WorkSpaceHelper";
 import { formateDate } from "../utils/Helper";
-import { toast } from "sonner";
 
 const WorkSpaceDetails = () => {
   const navigate = useNavigate();
@@ -32,10 +28,7 @@ const WorkSpaceDetails = () => {
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [joinLoading, setJoinLoading] = useState(null);
   const [comment, setComment] = useState("");
-  const [isComment, setIsComment] = useState(false);
   const [hasAccess, setHasAccess] = useState(true);
-  const [isCommentActive, setIsCommentActive] = useState(false);
-  const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [workSpaceDetails, setWorkSpaceDetails] = useState(null);
 
   useEffect(() => {
@@ -66,24 +59,6 @@ const WorkSpaceDetails = () => {
       navigate("/workspaces");
     } finally {
       setLeaveLoading(false);
-    }
-  };
-
-  const handleSendComment = async () => {
-    if (!comment) return toast.error("comment is required!!");
-    setIsCommentActive(true);
-    setTimeout(() => {
-      setIsCommentLoading(true);
-      setIsCommentActive(false);
-    }, 800);
-    try {
-      await addCommentToWorkSpace(workspaceId, currentUser, comment);
-      setComment("");
-      toast.success("comment added sucessfully.");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsCommentLoading(false);
     }
   };
 
@@ -187,81 +162,14 @@ const WorkSpaceDetails = () => {
                 </div>
               </div>
             </div>
-            <div className="workspace-detail-card">
-              <div className="workspace-detail-comment-header-container">
-                <div className="workspace-detail-comment-header">
-                  <h3>Comments</h3>
-                  <button
-                    onClick={() => {
-                      setIsComment(!isComment);
-                    }}
-                    className="comment-post-btn"
-                  >
-                    Post
-                    <span className="icon">
-                      {isComment ? (
-                        <ChevronUp size={18} />
-                      ) : (
-                        <ChevronDown size={18} />
-                      )}
-                    </span>
-                  </button>
-                </div>
-                {isComment && (
-                  <div className="write-comment-container">
-                    <div className="settings-field">
-                      <label className="settings-label">Write a Comment</label>
-                      <textarea
-                        className="settings-textarea"
-                        placeholder="Write your Comment..."
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                      />
-                    </div>
-                    <button
-                      onClick={handleSendComment}
-                      className={`${
-                        isCommentActive ? "active" : ""
-                      } comment-send-btn`}
-                    >
-                      {isCommentLoading ? (
-                        <Loader color="#fff" size="24" />
-                      ) : (
-                        <>
-                          Send Comment
-                          <span className="icon">
-                            <SendHorizonal />
-                          </span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="workspace-detail-comments-container">
-                {workSpaceDetails?.comments?.length > 0 ? (
-                  [...workSpaceDetails.comments]
-                    .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
-                    .map((comment, index) => (
-                      <div key={index} className="workspace-comment-card">
-                        <div className="workspace-comment-header">
-                          <strong>
-                            {comment.createdBy?.name || "Anonymous"}
-                          </strong>
-                          <span className="workspace-comment-date">
-                            {formateDate(comment?.createdAt)}
-                          </span>
-                        </div>
-                        <p className="workspace-comment-body">
-                          {comment.comment}
-                        </p>
-                      </div>
-                    ))
-                ) : (
-                  <p className="no-data">No Comments found.</p>
-                )}
-              </div>
-            </div>
+            <CommentsArea
+              comments={workSpaceDetails?.comments}
+              setComment={setComment}
+              comment={comment}
+              AtSubmit={() =>
+                addCommentToWorkSpace(workspaceId, currentUser, comment)
+              }
+            />
           </>
         )}
       </div>

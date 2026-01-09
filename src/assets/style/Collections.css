@@ -108,12 +108,15 @@
 
 .collection-modal-backdrop {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 100;
 }
 
 .collection-modal {
@@ -169,15 +172,20 @@
   resize: none;
 }
 
+.collection-input:focus,
+.collection-textarea:focus {
+  border-color: var(--primary);
+}
+
 .collection-input-icon {
   position: relative;
 }
 
 .collection-input-icon svg {
   position: absolute;
-  top: 50%;
+  top: 17px;
   left: 10px;
-  transform: translateY(-50%);
+  font-size: 0px;
   color: var(--text-muted);
 }
 
@@ -193,6 +201,7 @@
 }
 
 .collection-btn-secondary {
+  cursor: pointer;
   background: var(--bg-muted);
   border: none;
   padding: 8px 14px;
@@ -200,11 +209,13 @@
 }
 
 .collection-btn-primary {
+  cursor: pointer;
   background: var(--primary);
   color: var(--text-inverse);
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
+  width: 90px;
 }
 
 /* ========= CollectionDetail Style ========= */
@@ -249,7 +260,7 @@
 
 .collection-details-description {
   color: var(--text-muted);
-  margin-bottom: 16px;
+  margin: 6px 0px 16px;
 }
 
 .collection-details-watch {

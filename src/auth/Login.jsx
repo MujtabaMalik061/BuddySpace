@@ -21,7 +21,7 @@ const Login = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/workspaces");
     } catch (err) {
       console.error("Login error:", err);
       if (err.code === "auth/user-not-found") {

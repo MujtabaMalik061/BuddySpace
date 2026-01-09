@@ -46,7 +46,7 @@ const SignUp = () => {
         createdAt: new Date(),
       });
       toast.success("Login successfully.");
-      navigate("/dashboard");
+      navigate("/workspaces");
     } catch (error) {
       console.error("Signup error:", error);
       toast.error(error.message);

@@ -1,5 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./FirebaseConfig";
+import { formatDistanceToNow } from "date-fns";
 
 export const generateCustomId = async (collectionName) => {
   const characters =
@@ -42,4 +43,19 @@ export const formateDate = (timestamp) => {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+};
+
+export const formatAgo = (timestamp) => {
+  if (!timestamp) return "";
+
+  const date =
+    typeof timestamp?.toDate === "function"
+      ? timestamp.toDate()
+      : new Date(timestamp);
+
+  const diff = Date.now() - date.getTime();
+
+  if (diff < 60 * 1000) return "just now";
+
+  return formatDistanceToNow(date, { addSuffix: true });
 };

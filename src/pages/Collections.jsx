@@ -1,8 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../assets/style/Collections.css";
-import { Plus, MessageCircle, ExternalLink, Image, X } from "lucide-react";
+import {
+  Plus,
+  MessageCircle,
+  ExternalLink,
+  Image,
+  X,
+  Link,
+} from "lucide-react";
 import TopBar from "../components/TopBar";
+import Loader from "../components/Loader";
 import { useNavigate } from "react-router";
+import {
+  addCollectionItem,
+  listenCollectionsByWorkspace,
+} from "../services/CollectionsHelper";
+import { useAuth } from "../context/AuthContext";
 
 const initialItems = [
   {
@@ -29,7 +42,14 @@ const initialItems = [
 
 const Collections = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(initialItems);
+  const { currentUser } = useAuth();
+  const selectedWorkspace = JSON.parse(
+    localStorage.getItem("selectedWorkspace")
+  );
+  const workSpaceId = selectedWorkspace?.id;
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [addLoading, setAddLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -38,23 +58,43 @@ const Collections = () => {
     link: "",
   });
 
-  const addItem = () => {
-    if (!form.title.trim()) return;
+  useEffect(() => {
+    if (!workSpaceId) return;
 
-    setItems([
-      ...items,
-      {
-        id: items.length + 1,
-        ...form,
+    const unsub = listenCollectionsByWorkspace(
+      workSpaceId,
+      setItems,
+      setLoading
+    );
+
+    return () => unsub && unsub();
+  }, [workSpaceId]);
+
+  const addItem = async () => {
+    if (!form.title.trim() || !workSpaceId) return;
+    setAddLoading(true);
+    try {
+      const data = {
+        title: form.title,
+        description: form.description,
         thumbnail:
           form.thumbnail ||
           "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400",
-        comments: 0,
-      },
-    ]);
+        link: form.link,
+        comments: [],
+        createdBy: currentUser?.id,
+        workSpaceId,
+      };
 
-    setForm({ title: "", description: "", thumbnail: "", link: "" });
-    setShowModal(false);
+      await addCollectionItem(data);
+
+      setForm({ title: "", description: "", thumbnail: "", link: "" });
+      setShowModal(false);
+    } catch (err) {
+      console.error("Add collection item error:", err);
+    } finally {
+      setAddLoading(false);
+    }
   };
 
   return (
@@ -62,7 +102,6 @@ const Collections = () => {
       <TopBar title="Collections" />
 
       <div className="collection-root">
-        {/* ===== Header ===== */}
         <div className="collection-header">
           <div>
             <h1 className="collection-title">Collections</h1>
@@ -79,43 +118,51 @@ const Collections = () => {
             Add Item
           </button>
         </div>
+        {loading ? (
+          <Loader style={{ height: "60vh", width: "100%" }} />
+        ) : items?.length > 0 ? (
+          <div className="collection-grid">
+            {items.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => {
+                  navigate(`/collection/${item?.id}`);
+                }}
+                className="collection-card"
+              >
+                <div className="collection-thumb">
+                  <img src={item.thumbnail} alt={item.title} />
+                </div>
 
-        <div className="collection-grid">
-          {items.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                navigate(`/collection/${item?.id}`);
-              }}
-              className="collection-card"
-            >
-              <div className="collection-thumb">
-                <img src={item.thumbnail} alt={item.title} />
-              </div>
+                <div className="collection-body">
+                  <h3 className="collection-card-title">{item.title}</h3>
+                  <p className="collection-card-desc">{item.description}</p>
 
-              <div className="collection-body">
-                <h3 className="collection-card-title">{item.title}</h3>
-                <p className="collection-card-desc">{item.description}</p>
+                  <div className="collection-card-actions">
+                    <button className="collection-comments-btn">
+                      <MessageCircle size={14} />
+                      {item?.comments?.length || 0}
+                    </button>
 
-                <div className="collection-card-actions">
-                  <button className="collection-comments-btn">
-                    <MessageCircle size={14} />
-                    {item.comments}
-                  </button>
-
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="collection-link-btn"
-                  >
-                    <ExternalLink size={14} />
-                  </a>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="collection-link-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-data">No any collection found.</div>
+        )}
 
         {showModal && (
           <div className="collection-modal-backdrop">
@@ -159,21 +206,29 @@ const Collections = () => {
               />
 
               <label className="collection-label">External Link</label>
-              <input
-                className="collection-input"
-                value={form.link}
-                onChange={(e) => setForm({ ...form, link: e.target.value })}
-              />
+              <div className="collection-input-icon">
+                <Link size={16} />
+                <input
+                  className="collection-input"
+                  value={form.link}
+                  onChange={(e) => setForm({ ...form, link: e.target.value })}
+                />
+              </div>
 
               <div className="collection-modal-actions">
                 <button
                   className="collection-btn-secondary"
                   onClick={() => setShowModal(false)}
+                  disabled={addLoading}
                 >
                   Cancel
                 </button>
-                <button className="collection-btn-primary" onClick={addItem}>
-                  Save Item
+                <button
+                  disabled={addLoading}
+                  className="collection-btn-primary"
+                  onClick={addItem}
+                >
+                  {addLoading ? <Loader color="#fff" size="16" /> : "Save Item"}
                 </button>
               </div>
             </div>

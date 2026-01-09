@@ -1,7 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../assets/style/CustomComponents.css";
-import { ArrowLeft, Check, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  SendHorizonal,
+} from "lucide-react";
 import { useNavigate } from "react-router";
+import Loader from "./Loader";
+import { formatAgo, formateDate } from "../utils/Helper";
+import { toast } from "sonner";
+
 
 export const Selector = ({
   disabled = false,
@@ -191,7 +201,7 @@ export const Tabs = ({ activeTab, setActiveTab, tabs }) => {
   );
 };
 
-export const BackBtn = ({title = "", onBack = ""}) => {
+export const BackBtn = ({ title = "", onBack = "" }) => {
   const navigate = useNavigate();
 
   return (
@@ -206,6 +216,102 @@ export const BackBtn = ({title = "", onBack = ""}) => {
         </span>
         {title}
       </button>
+    </div>
+  );
+};
+
+export const CommentsArea = ({
+  comments = [],
+  setComment = () => {},
+  comment = "",
+  AtSubmit = async () => {},
+}) => {
+  const [isComment, setIsComment] = useState(false);
+  const [isCommentActive, setIsCommentActive] = useState(false);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!comment) return toast.error("comment is required!!");
+    setIsCommentActive(true);
+    setTimeout(() => {
+      setIsCommentLoading(true);
+      setIsCommentActive(false);
+    }, 800);
+    try {
+      await AtSubmit();
+      setComment("");
+      toast.success("comment added sucessfully.");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsCommentLoading(false);
+    }
+  };
+  return (
+    <div className="workspace-detail-card">
+      <div className="workspace-detail-comment-header-container">
+        <div className="workspace-detail-comment-header">
+          <h3>Comments</h3>
+          <button
+            onClick={() => {
+              setIsComment(!isComment);
+            }}
+            className="comment-post-btn"
+          >
+            Post
+            <span className="icon">
+              {isComment ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            </span>
+          </button>
+        </div>
+        {isComment && (
+          <div className="write-comment-container">
+            <div className="settings-field">
+              <label className="settings-label">Write a Comment</label>
+              <textarea
+                className="settings-textarea"
+                placeholder="Write your Comment..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              className={`${isCommentActive ? "active" : ""} comment-send-btn`}
+            >
+              {isCommentLoading ? (
+                <Loader color="#fff" size="24" />
+              ) : (
+                <>
+                  Send Comment
+                  <span className="icon">
+                    <SendHorizonal />
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="workspace-detail-comments-container">
+        {comments?.length > 0 ? (
+          [...comments]
+            .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
+            .map((comment, index) => (
+              <div key={index} className="workspace-comment-card">
+                <div className="workspace-comment-header">
+                  <strong>{comment.createdBy?.name || "Anonymous"}</strong>
+                  <span className="workspace-comment-date">
+                    {formatAgo(comment?.createdAt)}
+                  </span>
+                </div>
+                <p className="workspace-comment-body">{comment.comment}</p>
+              </div>
+            ))
+        ) : (
+          <p className="no-data">No Comments found.</p>
+        )}
+      </div>
     </div>
   );
 };

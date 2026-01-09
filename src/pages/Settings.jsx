@@ -146,7 +146,7 @@ const Settings = () => {
             </div>
             <div className="settings-avatar-actions">
               <button
-                onClick={() => toast.success("This method in working.")}
+                onClick={() => toast.error("Not available now.")}
                 className="settings-outline-button"
               >
                 <Camera size={16} /> Change Avatar
@@ -173,6 +173,7 @@ const Settings = () => {
               type="email"
               placeholder="john@example.com"
               value={currentUser?.email || "N/A"}
+              onClick={() => toast.error("Not allow to change.")}
               readOnly
             />
           </div>

@@ -12,12 +12,6 @@ export const IMAGES = {
 
 export const SidebarMenuItems = [
   {
-    name: "Dashboard",
-    icon: "LayoutGrid",
-    route: "/dashboard",
-    activeAt: "/dashboard",
-  },
-  {
     name: "Workspaces",
     icon: "FolderOpen",
     route: "/workspaces",

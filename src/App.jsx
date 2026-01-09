@@ -7,7 +7,6 @@ import SignUp from "./auth/SignUp.jsx";
 import ForgetPassword from "./auth/ForgetPassword.jsx";
 import AppLayout from "./layout/AppLayout.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
-import DashBoard from "./pages/DashBoard.jsx";
 import WorkSpaces from "./pages/WorkSpaces.jsx";
 import WorkSpaceDetails from "./components/WorkSpaceDetails.jsx";
 import Chats from "./pages/Chats.jsx";
@@ -29,7 +28,6 @@ const App = () => {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/workspaces" element={<WorkSpaces />} />
           <Route path="/create-workspace" element={<CreateWorkSpace />} />
           <Route
