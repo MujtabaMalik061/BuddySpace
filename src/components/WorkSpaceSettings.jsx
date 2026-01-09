@@ -92,20 +92,22 @@ const WorkSpaceSettings = () => {
     <>
       <TopBar title="Settings" />
 
-      <div className="page-root">
-        <div className="settings-page-header">
-          <h1 className="settings-page-title">Workspace Settings</h1>
-          <p className="settings-page-subtitle">
+      <div className="page-root padd-12-24">
+        <div className="settings-page-header mar-b-14-20">
+          <h1 className="settings-page-title font-15-20">Workspace Settings</h1>
+          <p className="settings-page-subtitle font-14-18">
             Manage your workspace preferences
           </p>
         </div>
 
-        <section className="settings-section">
+        <section className="settings-section  padd-12-24">
           <div className="settings-section-header">
             <FolderOpen size={20} />
             <div>
-              <h2 className="settings-section-title">Workspace Info</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">
+                Workspace Info
+              </h2>
+              <p className="settings-section-description font-12-16">
                 Update workspace details
               </p>
             </div>
@@ -134,7 +136,7 @@ const WorkSpaceSettings = () => {
             onClick={() =>
               handleWorkSpaceUpdate(workspaceId, setLoading, name, description)
             }
-            className="settings-primary-button"
+            className="settings-primary-button mar-t-12-18"
           >
             {loading === "UpdateProfile" ? (
               <Loader color="#fff" size="15" />
@@ -144,12 +146,12 @@ const WorkSpaceSettings = () => {
           </button>
         </section>
 
-        <section className="settings-section">
+        <section className="settings-section  padd-12-24">
           <div className="settings-section-header">
             <Lock size={20} />
             <div>
-              <h2 className="settings-section-title">Visibility</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Visibility</h2>
+              <p className="settings-section-description font-12-16">
                 Control workspace privacy
               </p>
             </div>
@@ -157,8 +159,10 @@ const WorkSpaceSettings = () => {
 
           <div className="settings-toggle-row">
             <div>
-              <span className="settings-toggle-title">Private Workspace</span>
-              <p className="settings-toggle-description">
+              <span className="settings-toggle-title font-14-18">
+                Private Workspace
+              </span>
+              <p className="settings-toggle-description font-12-16">
                 Only invited members can see this workspace
               </p>
             </div>
@@ -174,7 +178,7 @@ const WorkSpaceSettings = () => {
             onClick={() =>
               handleVisibilityUpdate(workspaceId, setLoading, isPrivate)
             }
-            className="settings-secondary-button"
+            className="settings-secondary-button mar-t-12-18"
           >
             {loading === "UpdateVisibility" ? (
               <Loader size="15" />
@@ -184,16 +188,15 @@ const WorkSpaceSettings = () => {
           </button>
         </section>
 
-        {/* ===== Danger Zone ===== */}
-        <section className="settings-section">
+        <section className="settings-section  padd-12-24">
           <div
             style={{ color: "var(--error)" }}
             className="settings-section-header"
           >
             <Trash2 color="var(--error)" size={20} />
             <div>
-              <h2 className="settings-section-title">Danger Zone</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Danger Zone</h2>
+              <p className="settings-section-description font-12-16">
                 Irreversible actions
               </p>
             </div>
@@ -202,7 +205,7 @@ const WorkSpaceSettings = () => {
           <button
             onClick={() => handleDeleteWorkspace(workspaceId, navigate)}
             style={{ background: "var(--error)" }}
-            className="settings-primary-button"
+            className="settings-primary-button mar-t-12-18"
           >
             Delete Workspace
           </button>

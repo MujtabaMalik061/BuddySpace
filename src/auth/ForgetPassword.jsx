@@ -43,8 +43,8 @@ const ForgetPassword = () => {
       <div className="login-page-overlay">
         <div className="login-card">
           <div className="login-header">
-            <h1 className="login-title">Reset your password</h1>
-            <p className="login-subtitle">
+            <h1 className="login-title font-15-20">Reset your password</h1>
+            <p className="login-subtitle font-12-16">
               Enter your email and we'll send you a reset link
             </p>
           </div>

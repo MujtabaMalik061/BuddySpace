@@ -137,6 +137,7 @@
   border-radius: 20px;
   border: 1px solid var(--border-default);
   box-shadow: var(--shadow-sm);
+  max-width: 92vw;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 

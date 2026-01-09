@@ -214,7 +214,6 @@ const Members = () => {
                       currentUser.id === storedWorkspace?.createdBy && (
                         <IconSelector
                           icon={<MoreHorizontal size={16} />}
-                          position="left"
                           options={[
                             {
                               label: "Remove Member",

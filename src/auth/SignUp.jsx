@@ -63,8 +63,10 @@ const SignUp = () => {
       <div className="login-page-overlay">
         <div className="login-card">
           <div className="login-header">
-            <h1 className="login-title">Create your BuddySpace account</h1>
-            <p className="login-subtitle">
+            <h1 className="login-title font-15-20">
+              Create your BuddySpace account
+            </h1>
+            <p className="login-subtitle font-12-16">
               Start collaborating with your team today
             </p>
           </div>

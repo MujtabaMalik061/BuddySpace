@@ -12,7 +12,6 @@ import Loader from "./Loader";
 import { formatAgo, formateDate } from "../utils/Helper";
 import { toast } from "sonner";
 
-
 export const Selector = ({
   disabled = false,
   filter,
@@ -47,7 +46,7 @@ export const Selector = ({
       className={`customers-filter-container ${disabled ? "disabled" : ""}`}
     >
       <div className="customers-filter-selector">
-        {selectedOption?.label || filter}
+        <span className="elepsis">{selectedOption?.label || filter}</span>
         <span className="icon">
           {isFilterOpen ? <ChevronUp size={17} /> : <ChevronDown size={17} />}
         </span>
@@ -171,7 +170,7 @@ export const Tabs = ({ activeTab, setActiveTab, tabs }) => {
   const activePosition = calculateActiveWidthAndLocation(tabs, activeTab);
 
   return (
-    <div className="customers-tabs">
+    <div className="customers-tabs mar-b-20-40">
       {activePosition && (
         <div
           style={{
@@ -186,7 +185,7 @@ export const Tabs = ({ activeTab, setActiveTab, tabs }) => {
         <button
           key={index}
           onClick={() => setActiveTab(tab.filter)}
-          className={`customers-tab ${
+          className={`elepsis customers-tab font-12-16 ${
             activeTab === tab.filter ? "active" : ""
           }`}
           style={{
@@ -205,11 +204,12 @@ export const BackBtn = ({ title = "", onBack = "" }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="back-btn-container">
+    <div className="back-btn-container mar-b-14-20">
       <button
         onClick={() => {
           navigate(onBack);
         }}
+        className="padd-duo-6-10-and-14-10"
       >
         <span className="icon">
           <ArrowLeft />
@@ -248,7 +248,7 @@ export const CommentsArea = ({
     }
   };
   return (
-    <div className="workspace-detail-card">
+    <div className="workspace-detail-card mar-t-20-40 padd-10-20">
       <div className="workspace-detail-comment-header-container">
         <div className="workspace-detail-comment-header">
           <h3>Comments</h3>
@@ -293,19 +293,26 @@ export const CommentsArea = ({
           </div>
         )}
       </div>
-      <div className="workspace-detail-comments-container">
+      <div className="workspace-detail-comments-container mar-t-20-40">
         {comments?.length > 0 ? (
           [...comments]
             .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
             .map((comment, index) => (
-              <div key={index} className="workspace-comment-card">
+              <div
+                key={index}
+                className="workspace-comment-card padd-duo-6-10-and-8-12 mar-b-8-12"
+              >
                 <div className="workspace-comment-header">
-                  <strong>{comment.createdBy?.name || "Anonymous"}</strong>
-                  <span className="workspace-comment-date">
+                  <strong className="font-12-16">
+                    {comment.createdBy?.name || "Anonymous"}
+                  </strong>
+                  <span className="workspace-comment-date font-10-12">
                     {formatAgo(comment?.createdAt)}
                   </span>
                 </div>
-                <p className="workspace-comment-body">{comment.comment}</p>
+                <p className="workspace-comment-body font-10-12">
+                  {comment.comment}
+                </p>
               </div>
             ))
         ) : (

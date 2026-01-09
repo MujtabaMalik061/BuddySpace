@@ -121,33 +121,33 @@ const Settings = () => {
   return (
     <>
       <TopBar title="Settings" />
-      <div className="page-root">
-        <div className="settings-page-header">
-          <h1 className="settings-page-title">Settings</h1>
-          <p className="settings-page-subtitle">
+      <div className="page-root padd-12-24">
+        <div className="settings-page-header mar-b-14-20">
+          <h1 className="settings-page-title font-15-20">Settings</h1>
+          <p className="settings-page-subtitle font-12-16">
             Manage your account preferences
           </p>
         </div>
 
-        <section className="settings-section">
+        <section className="settings-section padd-12-24">
           <div className="settings-section-header">
             <Camera size={20} />
             <div>
-              <h2 className="settings-section-title">Profile</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Profile</h2>
+              <p className="settings-section-description font-12-16">
                 Update your personal information
               </p>
             </div>
           </div>
 
           <div className="settings-avatar-row">
-            <div className="settings-avatar">
+            <div className="settings-avatar icon-40-80  font-15-20">
               {ProfileByName(currentUser?.fullName)}
             </div>
             <div className="settings-avatar-actions">
               <button
                 onClick={() => toast.error("Not available now.")}
-                className="settings-outline-button"
+                className="settings-outline-button padd-duo-6-10-and-14-10"
               >
                 <Camera size={16} /> Change Avatar
               </button>
@@ -155,7 +155,7 @@ const Settings = () => {
             </div>
           </div>
 
-          <div className="settings-divider" />
+          <div className="settings-divider mar-duo-15-30-and-0" />
           <div className="settings-field">
             <label className="settings-label">Full Name</label>
             <input
@@ -181,7 +181,7 @@ const Settings = () => {
           <button
             disabled={loading !== ""}
             onClick={handleProfileUpdate}
-            className="settings-primary-button"
+            className="settings-primary-button mar-t-12-18"
           >
             {loading === "UpdateProfile" ? (
               <Loader color="#fff" size="15" />
@@ -195,8 +195,8 @@ const Settings = () => {
         <div className="settings-section-header">
           <Bell size={20} />
           <div>
-            <h2 className="settings-section-title">Notifications</h2>
-            <p className="settings-section-description">
+            <h2 className="settings-section-title font-14-18">Notifications</h2>
+            <p className="settings-section-description font-12-16">
               Configure how you receive notifications
             </p>
           </div>
@@ -237,12 +237,12 @@ const Settings = () => {
         </div>
       </section> */}
 
-        <section className="settings-section">
+        <section className="settings-section padd-12-24">
           <div className="settings-section-header">
             <Lock size={20} />
             <div>
-              <h2 className="settings-section-title">Security</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Security</h2>
+              <p className="settings-section-description font-12-16">
                 Manage your password and security settings
               </p>
             </div>
@@ -315,7 +315,7 @@ const Settings = () => {
           <button
             disabled={loading !== ""}
             onClick={handlePasswordUpdate}
-            className="settings-secondary-button"
+            className="settings-secondary-button mar-t-12-18"
           >
             {loading === "UpdatePassword" ? (
               <Loader size="15" />
@@ -325,12 +325,12 @@ const Settings = () => {
           </button>
         </section>
 
-        <section className="settings-section">
+        <section className="settings-section padd-12-24">
           <div className="settings-section-header">
             <Palette size={20} />
             <div>
-              <h2 className="settings-section-title">Appearance</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Appearance</h2>
+              <p className="settings-section-description font-12-16">
                 Customize how BuddySpace looks
               </p>
             </div>
@@ -338,8 +338,10 @@ const Settings = () => {
 
           <div className="settings-toggle-row">
             <div>
-              <span className="settings-toggle-title">Dark Mode</span>
-              <p className="settings-toggle-description">
+              <span className="settings-toggle-title font-14-18">
+                Dark Mode
+              </span>
+              <p className="settings-toggle-description font-12-16">
                 Switch between light and dark themes
               </p>
             </div>
@@ -347,22 +349,22 @@ const Settings = () => {
           </div>
         </section>
 
-        <section className="settings-section">
+        <section className="settings-section padd-12-24">
           <div
             style={{ color: "var(--error)" }}
             className="settings-section-header"
           >
             <Trash2 color="var(--error)" size={20} />
             <div>
-              <h2 className="settings-section-title">Danger Zone</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">Danger Zone</h2>
+              <p className="settings-section-description font-12-16">
                 Irreversible actions for your workspace
               </p>
             </div>
           </div>
           <button
             style={{ background: "var(--error)" }}
-            className="settings-primary-button"
+            className="settings-primary-button mar-t-12-18"
           >
             Delete Workspace
           </button>

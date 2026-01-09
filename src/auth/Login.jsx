@@ -48,8 +48,10 @@ const Login = () => {
       <div className="login-page-overlay">
         <div className="login-card">
           <div className="login-header">
-            <h1 className="login-title">Welcome back to BuddySpace</h1>
-            <p className="login-subtitle">
+            <h1 className="login-title font-15-20">
+              Welcome back to BuddySpace
+            </h1>
+            <p className="login-subtitle font-12-16">
               Sign in to continue collaborating with your team
             </p>
           </div>
@@ -103,7 +105,7 @@ const Login = () => {
               className="login-submit-button"
               disabled={loading}
             >
-              {loading ? <Loader color="#fff" size="15"/> : "Sign In"}
+              {loading ? <Loader color="#fff" size="15" /> : "Sign In"}
             </button>
           </form>
 

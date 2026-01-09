@@ -11,6 +11,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  gap: 4px;
 }
 
 .workspaces-page-title {
@@ -27,6 +28,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  white-space: nowrap;
   background: var(--primary);
   color: var(--text-inverse);
   border: none;
@@ -68,13 +70,13 @@
 .workspaces-card-title {
   font-size: 18px;
   font-weight: 600;
-  width: 280px;
+  width: 230px;
 }
 
 .workspaces-card-desc {
   font-size: 14px;
   font-weight: 300;
-  width: 280px;
+  width: 230px;
   color: var(--text-muted);
   margin-top: 8px;
 }

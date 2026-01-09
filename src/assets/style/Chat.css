@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 90;
 }
 
 .chat-messages-date {
@@ -73,7 +73,7 @@
   display: flex;
   gap: 10px;
   width: 100%;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .chat-message-own {
@@ -90,6 +90,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+    flex-shrink: 0;
 }
 
 .chat-message-body {
@@ -171,4 +172,12 @@
 
 .chat-send-btn:hover {
   background: var(--primary-hover);
+}
+
+/* ======== Responsive ============ */
+
+@media (max-width: 768px) {
+  .chat-message-bubble {
+    max-width: 80vw;
+  }
 }

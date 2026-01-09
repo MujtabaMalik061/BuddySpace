@@ -75,7 +75,6 @@ const TopBar = ({ title = "" }) => {
         disabled={loading || !hasWorkSpaces}
         filter={selectorFilter}
         setFilter={handleFilterChange}
-        position="left"
         options={selectorOptions}
       />
     </div>

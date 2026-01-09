@@ -26,15 +26,15 @@ const LogoutModel = ({ onClose }) => {
           <TriangleAlert size={48} />
         </div>
 
-        <h2 className="logout-title">Confirm Logout!!!</h2>
+        <h2 className="logout-title font-20-32">Confirm Logout!!!</h2>
 
-        <p className="logout-text">
+        <p className="logout-text font-15-20">
           Are you sure you want to log out from the dashboard?
         </p>
 
         <div className="logout-actions">
           <button
-            className="logout-action-btn logout-action-primary"
+            className="logout-action-btn logout-action-primary padd-duo-10-14-and-14-28"
             onClick={onClose}
           >
             <span className="btn-icon">
@@ -44,7 +44,7 @@ const LogoutModel = ({ onClose }) => {
           </button>
           <button
             onClick={handleLogout}
-            className="logout-action-btn logout-action-secondary"
+            className="logout-action-btn logout-action-secondary padd-duo-10-14-and-14-28"
           >
             <span className="btn-icon">
               <LogOut />

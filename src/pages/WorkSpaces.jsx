@@ -104,11 +104,13 @@ const WorkSpaces = () => {
     <>
       <TopBar title="Workspaces" />
 
-      <div className="page-root">
+      <div className="page-root padd-12-24">
         <div className="workspaces-page-header">
           <div>
-            <h1 className="workspaces-page-title">Your Workspaces</h1>
-            <p className="workspaces-page-subtitle">
+            <h1 className="workspaces-page-title font-20-32">
+              Your Workspaces
+            </h1>
+            <p className="workspaces-page-subtitle font-12-16">
               Manage and access your collaborative spaces
             </p>
           </div>
@@ -117,7 +119,7 @@ const WorkSpaces = () => {
             onClick={() => {
               navigate("/create-workspace");
             }}
-            className="workspaces-create-btn"
+            className="workspaces-create-btn padd-duo-6-10-and-14-10 font-12-16"
           >
             <Plus size={16} />
             Create Workspace
@@ -140,7 +142,7 @@ const WorkSpaces = () => {
           workspaces?.length > 0 ? (
             <div className="workspaces-grid">
               {workspaces.map((workspace) => (
-                <div key={workspace.id} className="workspaces-card">
+                <div key={workspace.id} className="workspaces-card padd-12-24">
                   <div className="workspaces-card-header">
                     <div>
                       <h3 className="workspaces-card-title elepsis">
@@ -203,7 +205,7 @@ const WorkSpaces = () => {
         ) : workspaces?.length > 0 ? (
           <div className="workspaces-grid">
             {workspaces.map((workspace) => (
-              <div key={workspace.id} className="workspaces-card">
+              <div key={workspace.id} className="workspaces-card padd-12-24">
                 <div className="workspaces-card-header">
                   <div>
                     <h3 className="workspaces-card-title elepsis">

@@ -23,6 +23,7 @@
   border: 1px solid var(--border-default);
   border-radius: 16px;
   box-shadow: var(--shadow-sm);
+  overflow: auto;
 }
 
 .members-card-header {

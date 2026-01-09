@@ -84,14 +84,16 @@ const Chat = () => {
           </div>
         </div>
 
-        <div className="chat-messages">
+        <div className="chat-messages padd-10-20">
           {loading && <Loader />}
 
           {!loading &&
             Object.keys(groupedMessages).map((dateLabel) => (
               <div key={dateLabel}>
                 <div className="chat-messages-date-container">
-                  <div className="chat-messages-date">{dateLabel}</div>
+                  <div className="chat-messages-date font-10-12">
+                    {dateLabel}
+                  </div>
                 </div>
 
                 {groupedMessages[dateLabel].map((msg) => (
@@ -143,7 +145,7 @@ const Chat = () => {
             placeholder="Type a message..."
             className="chat-input"
           />
-          
+
           <button type="submit" className="icon chat-send-btn">
             <SendHorizontal size={18} />
           </button>

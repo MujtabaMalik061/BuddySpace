@@ -95,19 +95,19 @@ const WorkSpaceDetails = () => {
     <>
       <TopBar title="Workspace Details" />
 
-      <div className="workspace-detail-root">
+      <div className="workspace-detail-root padd-12-24">
         <BackBtn title="Back to Workspaces" onBack="/workspaces" />
         {loading ? (
           <Loader style={{ height: "60vh", width: "100%" }} />
         ) : (
           <>
-            <div className="workspace-detail-card">
+            <div className="workspace-detail-card mar-t-20-40 padd-10-20">
               <div className="workspace-detail-header">
                 <div className="workspace-detail-header-info">
-                  <h1 className="workspace-detail-title">
+                  <h1 className="workspace-detail-title font-15-20">
                     {workSpaceDetails?.name}
                   </h1>
-                  <p className="workspace-detail-subtitle">
+                  <p className="workspace-detail-subtitle font-12-16">
                     {workSpaceDetails?.description}
                   </p>
                 </div>
@@ -149,13 +149,13 @@ const WorkSpaceDetails = () => {
                   </button>
                 ) : null}
               </div>
-              <div className="workspace-detail-line-data-container">
-                <div className="workspace-detail-line-data">
+              <div className="workspace-detail-line-data-container mar-t-20-40">
+                <div className="workspace-detail-line-data font-12-16">
                   <strong>Members</strong>
                   <span className="straight-line"></span>
                   <strong>{workSpaceDetails?.members?.length}</strong>
                 </div>
-                <div className="workspace-detail-line-data">
+                <div className="workspace-detail-line-data font-12-16">
                   <strong>Created At</strong>
                   <span className="straight-line"></span>
                   <strong>{formateDate(workSpaceDetails?.createdAt)}</strong>

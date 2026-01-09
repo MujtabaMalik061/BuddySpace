@@ -65,16 +65,16 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      <section className="landing-page-hero">
+      <section className="landing-page-hero padd-duo-60-30-and-16-12">
         <div className="landing-page-hero-container">
           <div className="landing-page-hero-grid">
             <div className="landing-page-hero-content">
-              <div className="landing-page-badge">
-                <Sparkles size={16} />
+              <div className="landing-page-badge padd-duo-4-8-and-16-12 font-12-16">
+                <Sparkles size={16} className="icon-12-16" />
                 <span>Collaboration made simple</span>
               </div>
 
-              <h1 className="landing-page-title">
+              <h1 className="landing-page-title font-56-25">
                 Create shared spaces.
                 <br />
                 <span className="landing-page-highlight-primary"> Chat.</span>
@@ -86,7 +86,7 @@ const LandingPage = () => {
                 Collaborate.
               </h1>
 
-              <p className="landing-page-description">
+              <p className="landing-page-description font-14-18">
                 BuddySpace brings your team together in one place. Create
                 workspaces, chat in real-time, and build collections that
                 everyone can enjoy.
@@ -94,15 +94,15 @@ const LandingPage = () => {
 
               <div className="landing-page-cta-group">
                 <button
-                  className="landing-page-btn landing-page-btn-hero"
+                  className="landing-page-btn landing-page-btn-hero mar-t-20-40 padd-duo-10-14-and-14-28 font-12-16"
                   onClick={() => navigate("/signup")}
                 >
                   Get Started Free
-                  <ArrowRight size={20} />
+                  <ArrowRight size={20} className="icon-14-20" />
                 </button>
 
                 <button
-                  className="landing-page-btn landing-page-btn-outline"
+                  className="landing-page-btn landing-page-btn-outline padd-duo-7-15-and-20-40"
                   onClick={() => navigate("/signin")}
                 >
                   Sign In
@@ -121,11 +121,11 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="landing-page-features">
+      <section className="landing-page-features padd-duo-60-30-and-16-12">
         <div className="landing-page-features-container">
-          <div className="landing-page-features-header">
-            <h2>Everything you need to collaborate</h2>
-            <p>
+          <div className="landing-page-features-header mar-b-32-64">
+            <h2 className="font-15-20">Everything you need to collaborate</h2>
+            <p className="font-12-16">
               BuddySpace gives you all the tools to work together, share ideas,
               and build collections as a team.
             </p>
@@ -133,12 +133,15 @@ const LandingPage = () => {
 
           <div className="landing-page-features-grid">
             {features.map((feature) => (
-              <div key={feature.title} className="landing-page-feature-card">
-                <div className="landing-page-feature-icon">
-                  <feature.icon size={28} />
+              <div
+                key={feature.title}
+                className="landing-page-feature-card padd-14-32"
+              >
+                <div className="landing-page-feature-icon icon-24-56 mar-b-14-20">
+                  <feature.icon size={28} className="icon-14-20" />
                 </div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
+                <h3 className="font-15-20">{feature.title}</h3>
+                <p className="font-12-16">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -147,13 +150,15 @@ const LandingPage = () => {
 
       <section className="landing-page-cta">
         <div className="landing-page-cta-container">
-          <h2>Ready to bring your team together?</h2>
-          <p>
+          <h2 style={{ marginBottom: "3px" }} className="font-15-20">
+            Ready to bring your team together?
+          </h2>
+          <p className="font-12-16">
             Join thousands of teams already using BuddySpace to collaborate
             better.
           </p>
           <button
-            className="landing-page-btn landing-page-btn-hero"
+            className="landing-page-btn landing-page-btn-hero mar-t-20-40 padd-duo-10-14-and-14-28 font-12-16"
             onClick={() => navigate("/signup")}
           >
             Start for Free
@@ -163,7 +168,9 @@ const LandingPage = () => {
       </section>
 
       <footer className="landing-page-footer">
-        <p>© {new Date().getFullYear()} BuddySpace. All rights reserved.</p>
+        <p className="font-12-16">
+          © {new Date().getFullYear()} BuddySpace. All rights reserved.
+        </p>
       </footer>
     </div>
   );

@@ -72,7 +72,7 @@ const CollectionDetails = () => {
     <>
       <TopBar title="Collection Details" />
 
-      <div className="collection-details-root">
+      <div className="collection-details-root padd-12-24">
         <div className="collection-details-header">
           <BackBtn title="Back to collections" onBack="/collections" />
         </div>
@@ -84,16 +84,20 @@ const CollectionDetails = () => {
             className="collection-details-image"
           />
 
-          <div className="collection-details-body">
-            <h1 className="collection-details-title">{item.title}</h1>
-            <p className="collection-details-description">{item.description}</p>
+          <div className="collection-details-body padd-10-20">
+            <h1 className="collection-details-title font-15-20">
+              {item.title}
+            </h1>
+            <p className="collection-details-description font-12-16">
+              {item.description}
+            </p>
 
             {item.link && (
               <a
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="collection-details-watch"
+                className="collection-details-watch padd-duo-6-10-and-14-10"
               >
                 <ExternalLink size={16} />
                 Watch Now
