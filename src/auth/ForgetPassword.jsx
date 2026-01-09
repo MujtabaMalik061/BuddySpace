@@ -1,36 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import Loader from "../components/Loader";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../utils/FirebaseConfig";
 import { IMAGES } from "../services/Constants";
+import { toast } from "sonner";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
-
     try {
       setLoading(true);
       await sendPasswordResetEmail(auth, email);
 
-      setMessage("Password reset link sent! Check your email.");
+      toast.success("Password reset link sent! Check your email.");
+      setEmail("");
     } catch (err) {
+      setEmail("");
       console.error("Reset password error:", err);
-
       if (err.code === "auth/user-not-found") {
-        setError("No account found with this email.");
+        toast.error("No account found with this email.");
       } else if (err.code === "auth/invalid-email") {
-        setError("Invalid email address.");
+        toast.error("Invalid email address.");
       } else {
-        setError("Failed to send reset link. Try again.");
+        toast.error("Failed to send reset link. Try again.");
       }
     } finally {
       setLoading(false);
@@ -64,15 +62,12 @@ const ForgetPassword = () => {
               />
             </div>
 
-            {message && <p className="login-success">{message}</p>}
-            {error && <p className="login-error">{error}</p>}
-
             <button
               type="submit"
               className="login-submit-button"
               disabled={loading}
             >
-              {loading ? "Sending..." : "Send Reset Link"}
+              {loading ? <Loader color="#fff" size="15" /> : "Send Reset Link"}
             </button>
           </form>
 

@@ -14,8 +14,10 @@ import "../assets/style/SideBar.css";
 import { IMAGES, SidebarMenuItems } from "../services/Constants";
 import { useLocation, useNavigate } from "react-router";
 import LogoutModel from "../auth/LogoutModel";
+import { useAuth } from "../context/AuthContext";
 
 const SideBar = () => {
+  const {logout} =useAuth()
   const navigate = useNavigate();
   const location = useLocation();
   const [isSideBar, setIsSideBar] = useState(false);

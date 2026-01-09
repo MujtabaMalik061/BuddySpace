@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { IMAGES } from "../services/Constants";
+import Loader from "../components/Loader";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../utils/FirebaseConfig";
@@ -56,7 +57,7 @@ const SignUp = () => {
 
   return (
     <div
-      style={{ backgroundImage: `url(${IMAGES.heroIllustration})` }}
+      style={{ backgroundImage: `url(${IMAGES.AuthBg})` }}
       className="login-page-root"
     >
       <div className="login-page-overlay">
@@ -131,7 +132,7 @@ const SignUp = () => {
               className="login-submit-button"
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create Account"}
+              {loading ? <Loader color="#fff" size="15" /> : "Create Account"}
             </button>
           </form>
 

@@ -159,21 +159,17 @@
 .login-submit-button {
   margin-top: 0.5rem;
   padding: 0.75rem;
-
   border-radius: 12px;
   border: none;
-
   background-color: var(--primary);
   color: var(--text-inverse);
-
   font-size: 1rem;
   font-weight: 600;
-
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-
   transition: background-color 0.2s ease, transform 0.15s ease,
     box-shadow 0.15s ease;
+  height: 42px;
 }
 
 .login-submit-button:hover {
@@ -225,3 +221,65 @@
 }
 
 /* ========= Logout Page Style ========= */
+.logout-modal {
+  width: 500px;
+  text-align: center;
+}
+
+.logout-icon {
+  color: var(--error);
+  margin-bottom: 20px;
+}
+
+.logout-title {
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.logout-text {
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+}
+
+.logout-actions {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.logout-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-action-btn:hover {
+  gap: 14px;
+}
+
+.logout-action-primary {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  box-shadow: 0 0px 16px rgb(0 0 0 / 21%);
+}
+
+.logout-action-secondary {
+  background: var(--error);
+  color: #ffffff;
+  box-shadow: 0 0px 18px rgba(255, 1, 1, 0.35);
+}
+
+.btn-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}

@@ -2,17 +2,42 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import "../assets/style/Auth.css";
+import Loader from "../components/Loader";
 import { IMAGES } from "../services/Constants";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/FirebaseConfig";
+import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
+
+    try {
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      if (err.code === "auth/user-not-found") {
+        toast.error("No account found with this email.");
+      } else if (err.code === "auth/wrong-password") {
+        toast.error("Incorrect password.");
+      } else if (err.code === "auth/invalid-email") {
+        toast.error("Invalid email address.");
+      } else if (err.code === "auth/invalid-credential") {
+        toast.error("Invalid credential. Try again.");
+      } else {
+        toast.error("Failed to sign in. Try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,9 +98,12 @@ const Login = () => {
                 </button>
               </div>
             </div>
-
-            <button type="submit" className="login-submit-button">
-              Sign In
+            <button
+              type="submit"
+              className="login-submit-button"
+              disabled={loading}
+            >
+              {loading ? <Loader color="#fff" size="15"/> : "Sign In"}
             </button>
           </form>
 

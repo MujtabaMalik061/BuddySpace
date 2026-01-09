@@ -1,9 +1,3 @@
-.settings-page-root {
-  max-width: 900px;
-  padding: 2rem 2rem;
-  color: var(--text-primary);
-}
-
 .settings-page-header {
   margin-bottom: 2rem;
 }
@@ -107,7 +101,8 @@
   color: var(--text-secondary);
 }
 
-.settings-input {
+.settings-input,
+.settings-textarea {
   padding: 0.65rem 0.8rem;
   border-radius: 10px;
 
@@ -122,34 +117,34 @@
     background-color 0.2s ease;
 }
 
-.settings-input::placeholder {
+.settings-textarea{
+  resize: none;
+  height: 100px;
+}
+
+.settings-input::placeholder,
+.settings-textarea::placeholder {
   color: var(--text-muted);
 }
 
-.settings-input:hover {
-  background-color: var(--bg-hover);
-}
-
-.settings-input:focus {
+.settings-input:focus,
+.settings-textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-/* ================= BUTTONS ================= */
 .settings-primary-button {
+  height: 40px;
+  min-width: 145px;
   margin-top: 1.5rem;
   padding: 0.7rem 1.25rem;
-
   border-radius: 12px;
   border: none;
-
   background-color: var(--primary);
   color: var(--text-inverse);
-
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-
   box-shadow: var(--shadow-sm);
   transition: background-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.15s ease;
@@ -162,6 +157,8 @@
 }
 
 .settings-secondary-button {
+  height: 40px;
+  min-width: 160px;
   margin-top: 1.25rem;
   padding: 0.65rem 1.1rem;
 
@@ -175,8 +172,7 @@
   font-weight: 600;
   cursor: pointer;
 
-  transition: background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .settings-secondary-button:hover {
@@ -201,8 +197,7 @@
   font-weight: 500;
   cursor: pointer;
 
-  transition: background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .settings-outline-button:hover {
@@ -210,7 +205,6 @@
   border-color: var(--border-hover);
 }
 
-/* ================= TOGGLES ================= */
 .settings-toggle-row {
   display: flex;
   align-items: center;
@@ -261,7 +255,6 @@
 .settings-toggle-row input[type="checkbox"]:checked::before {
   transform: translateX(20px);
 }
-
 
 /* ===== Responsive ===== */
 

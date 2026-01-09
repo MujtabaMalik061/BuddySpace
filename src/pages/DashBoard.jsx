@@ -1,10 +1,14 @@
 import React from "react";
+import TopBar from "../components/TopBar";
 
 const DashBoard = () => {
   return (
-    <div>
-      <div>DashBoard</div>
-    </div>
+    <>
+      <TopBar title="DashBoard" />
+      <div className="page-root">
+        <div>DashBoard</div>
+      </div>
+    </>
   );
 };
 

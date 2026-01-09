@@ -81,21 +81,17 @@
 
   /* ========== SHADOWS ========== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 6px 14px rgba(0, 0, 0, 0.8);
-
-  /* ========== Hover shadows ========== */
   --shadow-hover-sm: 0 2px 8px rgba(0, 0, 0, 0.7);
-  --shadow-hover-md: 0 10px 30px rgba(0, 0, 0, 0.9);
 
-  /* ========== OVERLAYS ========== */
-  --overlay-hover: rgba(248, 250, 252, 0.05);
+  --shadow-md: 0 6px 14px rgba(0, 0, 0, 0.8);
+  --shadow-hover-md: 0 10px 30px rgba(0, 0, 0, 0.9);
 }
 
 body {
   min-height: 100vh;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--bg-surface);
+  background-color: var(--bg-main);
   color: var(--text-primary);
 }
 
@@ -129,12 +125,36 @@ body {
   overflow-y: auto;
   margin-left: 260px;
   background-color: var(--bg-main);
-  opacity: 0;
-  animation: fade-in 0.4s ease-out 0.15s forwards;
 }
 
 .icon {
   font-size: 0px;
+}
+
+/* ------  Modal ------ */
+
+.modal-overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #00000073;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  width: 420px;
+  max-width: 98vw;
+  background: var(--bg-muted);
+  color: var(----text-primary);
+  box-shadow: 0px 0px 8px var(--text-muted);
+  border-radius: 8px;
+  padding: 24px;
 }
 
 /* ------  animations ------ */

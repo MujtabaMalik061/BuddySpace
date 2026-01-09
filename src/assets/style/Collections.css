@@ -1,0 +1,367 @@
+.collection-root {
+  padding: 24px;
+  background: var(--bg-main);
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.collection-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.collection-subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.collection-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.collection-add-btn:hover {
+  background: var(--primary-hover);
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.collection-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover-sm);
+}
+
+.collection-thumb img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.collection-card:hover img {
+  transform: scale(1.03);
+}
+
+.collection-body {
+  padding: 14px;
+}
+
+.collection-card-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.collection-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.collection-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.collection-comments-btn {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  background: none;
+  border: none;
+  color: var(--primary);
+}
+
+.collection-link-btn {
+  color: var(--text-muted);
+}
+
+.collection-link-btn:hover {
+  color: var(--primary);
+}
+
+.collection-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.collection-modal {
+  background: var(--bg-surface);
+  width: 420px;
+  border-radius: 14px;
+  padding: 20px;
+  max-height: 95vh;
+  overflow: auto;
+}
+
+.collection-modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.collection-label {
+  font-size: 13px;
+  margin-top: 10px;
+  display: block;
+}
+
+.collection-modal-header-close-btn {
+  font-size: 0px;
+  background: #2563eb24;
+  border: 1px solid var(--primary);
+  padding: 2px 2px;
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: 0.3s;
+}
+
+.collection-modal-header-close-btn:hover {
+  color: var(--primary);
+}
+
+.collection-input,
+.collection-textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-main);
+  outline: 0;
+  transition: 0.3s;
+}
+
+.collection-textarea {
+  height: 200px;
+  resize: none;
+}
+
+.collection-input-icon {
+  position: relative;
+}
+
+.collection-input-icon svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.collection-input-icon input {
+  padding-left: 32px;
+}
+
+.collection-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.collection-btn-secondary {
+  background: var(--bg-muted);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.collection-btn-primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+/* ========= CollectionDetail Style ========= */
+
+.collection-details-root {
+  max-width: 900px;
+  margin: auto;
+  padding: 24px;
+  opacity: 0;
+  animation: fade-in 0.4s ease-out 0.15s forwards;
+}
+
+.collection-details-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.collection-details-card {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 28px;
+}
+
+.collection-details-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+.collection-details-body {
+  padding: 20px;
+}
+
+.collection-details-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.collection-details-description {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.collection-details-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.collection-details-watch:hover {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.collection-details-comments {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.collection-details-comments-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.collection-details-add-comment {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.collection-details-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.collection-details-comment-box {
+  flex: 1;
+}
+
+.collection-details-textarea {
+  width: 100%;
+  min-height: 80px;
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+  padding: 10px;
+}
+
+.collection-details-post-btn {
+  margin-top: 8px;
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.collection-details-comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.collection-details-comment {
+  display: flex;
+  gap: 12px;
+}
+
+.collection-details-comment-content {
+  flex: 1;
+}
+
+.collection-details-comment-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.collection-details-user {
+  font-weight: 600;
+}
+
+.collection-details-time {
+  color: var(--text-muted);
+}
+
+.collection-details-text {
+  margin: 6px 0;
+}
+
+.collection-details-like-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+}
