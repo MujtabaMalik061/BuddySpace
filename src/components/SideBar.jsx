@@ -17,7 +17,7 @@ import LogoutModel from "../auth/LogoutModel";
 import { useAuth } from "../context/AuthContext";
 
 const SideBar = () => {
-  const {logout} =useAuth()
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSideBar, setIsSideBar] = useState(false);
@@ -89,25 +89,32 @@ const SideBar = () => {
         <div className="sidebar-divider" />
 
         <nav className="sidebar-menu">
-          {SidebarMenuItems.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                navigate(item.route);
-                setIsSideBar(false);
-              }}
-              className={`sidebar-item ${
-                location.pathname === item.activeAt ||
-                (item.startsWith &&
-                  location.pathname.startsWith(item.startsWith))
-                  ? "sidebar-item-active"
-                  : ""
-              }`}
-            >
-              {iconComponent(item.icon)}
-              <span className="sidebar-label">{item.name}</span>
-            </div>
-          ))}
+          {SidebarMenuItems.map((item, index) => {
+            const isActive = (item) => {
+              if (location.pathname === item.activeAt) return true;
+              if (!item.startsWith) return false;
+
+              return item.startsWith.some((path) =>
+                location.pathname.startsWith(path)
+              );
+            };
+
+            return (
+              <div
+                key={index}
+                onClick={() => {
+                  navigate(item.route);
+                  setIsSideBar(false);
+                }}
+                className={`sidebar-item ${
+                  isActive(item) ? "sidebar-item-active" : ""
+                }`}
+              >
+                {iconComponent(item.icon)}
+                <span className="sidebar-label">{item.name}</span>
+              </div>
+            );
+          })}
         </nav>
         <div className="sidebar-footer">
           <button

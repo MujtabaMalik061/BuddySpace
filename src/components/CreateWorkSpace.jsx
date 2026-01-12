@@ -37,20 +37,22 @@ const CreateWorkSpace = () => {
 
   return (
     <>
-      <div className="page-root">
-        <div className="settings-page-header">
-          <h1 className="settings-page-title">Create WorkSpace</h1>
-          <p className="settings-page-subtitle">
+      <div className="page-root padd-12-24">
+        <div className="settings-page-header mar-b-14-20">
+          <h1 className="settings-page-title font-15-20">Create WorkSpace</h1>
+          <p className="settings-page-subtitle font-14-18">
             Manage your workspace preferences
           </p>
         </div>
 
-        <section className="settings-section">
+        <section className="settings-section padd-12-24">
           <div className="settings-section-header">
             <FolderOpen size={20} />
             <div>
-              <h2 className="settings-section-title">Workspace Info</h2>
-              <p className="settings-section-description">
+              <h2 className="settings-section-title font-14-18">
+                Workspace Info
+              </h2>
+              <p className="settings-section-description font-12-16">
                 Add workspace details
               </p>
             </div>
@@ -74,12 +76,14 @@ const CreateWorkSpace = () => {
             />
           </div>
 
-          <section className="settings-section">
+          <section className="settings-section padd-12-24">
             <div className="settings-section-header">
               <Lock size={20} />
               <div>
-                <h2 className="settings-section-title">Visibility</h2>
-                <p className="settings-section-description">
+                <h2 className="settings-section-title font-14-18">
+                  Visibility
+                </h2>
+                <p className="settings-section-description font-12-16">
                   Control workspace privacy
                 </p>
               </div>
@@ -87,8 +91,10 @@ const CreateWorkSpace = () => {
 
             <div className="settings-toggle-row">
               <div>
-                <span className="settings-toggle-title">Private Workspace</span>
-                <p className="settings-toggle-description">
+                <span className="settings-toggle-title font-14-18">
+                  Private Workspace
+                </span>
+                <p className="settings-toggle-description font-12-16">
                   Only invited members can see this workspace
                 </p>
               </div>
@@ -102,7 +108,7 @@ const CreateWorkSpace = () => {
           <button
             disabled={loading}
             onClick={CreateWorkSpace}
-            className="settings-primary-button"
+            className="settings-primary-button font-12-16"
           >
             {loading ? (
               <Loader color="#fff" style={{ width: "130px" }} size="15" />

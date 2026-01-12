@@ -16,7 +16,7 @@ export const SidebarMenuItems = [
     icon: "FolderOpen",
     route: "/workspaces",
     activeAt: "/workspaces",
-    startsWith: ["/workspace"],
+    startsWith: ["/workspace", "/create-workspace", "/workspace-settings"],
   },
   {
     name: "Chat",
