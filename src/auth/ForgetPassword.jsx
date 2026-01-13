@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import Loader from "../components/Loader";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../utils/FirebaseConfig";
@@ -13,17 +13,21 @@ const ForgetPassword = () => {
   const { isOnline } = useAuth();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       await sendPasswordResetEmail(auth, email);
-
-      toast.success("Password reset link sent! Check your email.");
+      toast.success(
+        "Password reset link sent! Check your email inbox or spam."
+      );
       setEmail("");
+      setIsSuccess(true);
     } catch (err) {
       setEmail("");
+      setIsSuccess(false);
       console.error("Reset password error:", err);
       if (err.code === "auth/user-not-found") {
         toast.error("No account found with this email.");
@@ -42,39 +46,65 @@ const ForgetPassword = () => {
       {isOnline ? (
         <div className="login-page-overlay">
           <div className="login-card">
-            <div className="login-header">
-              <h1 className="login-title font-15-20">Reset your password</h1>
-              <p className="login-subtitle font-12-16">
-                Enter your email and we'll send you a reset link
-              </p>
-            </div>
+            {isSuccess ? (
+              <>
+                <div className="login-header">
+                  <h1
+                    style={{ textAlign: "start" }}
+                    className="login-title font-15-20"
+                  >
+                    Reset Password
+                  </h1>
+                  <div className="forget-success-icon">
+                    <span className="icon">
+                      <Check size={30} />
+                    </span>
+                  </div>
+                  <h1 className="login-title font-15-20">Email Sent!</h1>
+                  <p className="login-subtitle font-12-16">
+                    Check your email inbox or spam for a link to reset your
+                    password.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="login-header">
+                  <h1 className="login-title font-15-20">
+                    Reset your password
+                  </h1>
+                  <p className="login-subtitle font-12-16">
+                    Enter your email and we'll send you a reset link
+                  </p>
+                </div>
 
-            <form className="login-form" onSubmit={handleSubmit}>
-              <div className="login-field">
-                <label className="login-label">Email</label>
-                <input
-                  type="email"
-                  className="login-input"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+                <form className="login-form" onSubmit={handleSubmit}>
+                  <div className="login-field">
+                    <label className="login-label">Email</label>
+                    <input
+                      type="email"
+                      className="login-input"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
 
-              <button
-                type="submit"
-                className="login-submit-button"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader color="#fff" size="15" />
-                ) : (
-                  "Send Reset Link"
-                )}
-              </button>
-            </form>
-
+                  <button
+                    type="submit"
+                    className="login-submit-button"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Loader color="#fff" size="15" />
+                    ) : (
+                      "Send Reset Link"
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
             <div className="login-footer">
               <button
                 onClick={() => navigate("/signin")}
