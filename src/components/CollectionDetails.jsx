@@ -8,6 +8,7 @@ import { db } from "../utils/FirebaseConfig";
 import Loader from "./Loader";
 import { useAuth } from "../context/AuthContext";
 import { addCommentToCollection } from "../services/CollectionsHelper";
+import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
 
 const CollectionDetails = () => {
   const { collectionId } = useParams();
@@ -20,20 +21,35 @@ const CollectionDetails = () => {
     if (!collectionId) return;
 
     setLoading(true);
-
     const ref = doc(db, "Collections", collectionId);
 
     const unsub = onSnapshot(
       ref,
-      (snap) => {
+      async (snap) => {
         if (!snap.exists()) {
-          console.error("Collection not found");
           setItem(null);
           setLoading(false);
           return;
         }
 
-        setItem({ id: snap.id, ...snap.data() });
+        const data = snap.data();
+        const comments = data.comments || [];
+        const userIds = comments.map((c) => c.createdBy?.id).filter(Boolean);
+        const usersMap = await getUsersMapByIds(userIds);
+        const enrichedComments = comments.map((comment) => ({
+          ...comment,
+          createdBy: {
+            ...comment.createdBy,
+            fullName: usersMap[comment.createdBy.id] || comment.createdBy.name,
+          },
+        }));
+
+        setItem({
+          id: snap.id,
+          ...data,
+          comments: enrichedComments,
+        });
+
         setLoading(false);
       },
       (error) => {
@@ -44,6 +60,7 @@ const CollectionDetails = () => {
 
     return () => unsub();
   }, [collectionId]);
+  
 
   if (loading) {
     return (

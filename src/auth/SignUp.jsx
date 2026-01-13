@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { IMAGES } from "../services/Constants";
 import Loader from "../components/Loader";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../utils/FirebaseConfig";
 import { generateCustomId } from "../utils/Helper";
 import { toast } from "sonner";
+import Offline from "../components/Offline";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { isOnline } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,102 +58,103 @@ const SignUp = () => {
   };
 
   return (
-    <div
-      style={{ backgroundImage: `url(${IMAGES.AuthBg})` }}
-      className="login-page-root"
-    >
-      <div className="login-page-overlay">
-        <div className="login-card">
-          <div className="login-header">
-            <h1 className="login-title font-15-20">
-              Create your BuddySpace account
-            </h1>
-            <p className="login-subtitle font-12-16">
-              Start collaborating with your team today
-            </p>
-          </div>
-
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="login-field">
-              <label className="login-label">Full Name</label>
-              <input
-                type="text"
-                className="login-input"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+    <>
+      {isOnline ? (
+        <div className="login-page-overlay">
+          <div className="login-card">
+            <div className="login-header">
+              <h1 className="login-title font-15-20">
+                Create your BuddySpace account
+              </h1>
+              <p className="login-subtitle font-12-16">
+                Start collaborating with your team today
+              </p>
             </div>
 
-            <div className="login-field">
-              <label className="login-label">Email</label>
-              <input
-                type="email"
-                className="login-input"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="login-field">
-              <label className="login-label">Password</label>
-              <div className="login-password-wrapper">
+            <form className="login-form" onSubmit={handleSubmit}>
+              <div className="login-field">
+                <label className="login-label">Full Name</label>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="text"
                   className="login-input"
-                  placeholder="Create a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   required
                 />
-                <button
-                  type="button"
-                  className="login-password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
               </div>
-            </div>
 
-            <div className="login-field">
-              <label className="login-label">Confirm Password</label>
-              <input
-                type="password"
-                className="login-input"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
+              <div className="login-field">
+                <label className="login-label">Email</label>
+                <input
+                  type="email"
+                  className="login-input"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="login-submit-button"
-              disabled={loading}
-            >
-              {loading ? <Loader color="#fff" size="15" /> : "Create Account"}
-            </button>
-          </form>
+              <div className="login-field">
+                <label className="login-label">Password</label>
+                <div className="login-password-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="login-input"
+                    placeholder="Create a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="login-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
 
-          <div className="login-footer">
-            <p>
-              Already have an account?
+              <div className="login-field">
+                <label className="login-label">Confirm Password</label>
+                <input
+                  type="password"
+                  className="login-input"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
               <button
-                className="login-signup-link"
-                onClick={() => navigate("/signin")}
+                type="submit"
+                className="login-submit-button"
+                disabled={loading}
               >
-                Sign in
+                {loading ? <Loader color="#fff" size="15" /> : "Create Account"}
               </button>
-            </p>
+            </form>
+
+            <div className="login-footer">
+              <p>
+                Already have an account?
+                <button
+                  className="login-signup-link"
+                  onClick={() => navigate("/signin")}
+                >
+                  Sign in
+                </button>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <Offline />
+      )}
+    </>
   );
 };
 

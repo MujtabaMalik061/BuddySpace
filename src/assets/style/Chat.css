@@ -86,11 +86,12 @@
   height: 36px;
   background: var(--bg-surface);
   border-radius: 50%;
+  font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .chat-message-body {
@@ -121,10 +122,26 @@
   border-radius: 14px 14px 4px 14px;
 }
 
+.chat-message-foot {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 4px;
+}
+
 .chat-message-time {
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+.chat-message-edit-label {
+  font-size: 8px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  background: var(--bg-hover-strong);
+  padding: 2px 5px;
+  border-radius: 10px;
 }
 
 .chat-input-bar {
@@ -139,7 +156,8 @@
 .chat-input {
   flex: 1;
   padding: 10px 14px;
-  border-radius: 12px;
+  font-size: 15px;
+  border-radius: 8px;
   border: 1px solid var(--border-default);
   background: var(--bg-main);
   color: var(--text-primary);
@@ -148,6 +166,28 @@
 .chat-input:focus {
   outline: none;
   border-color: var(--primary);
+}
+
+.msg-edit-overlay {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0px;
+  left: 0px;
+  background: #00000061;
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msg-edit-overlay > .chat-input-bar {
+  padding: 6px;
+  width: 600px;
+  max-width: 95vw;
+  border-radius: 5px;
+  border: 1px solid var(--border-default);
 }
 
 .chat-icon-btn {
@@ -164,7 +204,7 @@
 .chat-send-btn {
   background: var(--primary);
   border: none;
-  padding: 10px;
+  padding: 10px 14px;
   border-radius: 10px;
   color: var(--text-inverse);
   cursor: pointer;

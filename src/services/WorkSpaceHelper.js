@@ -11,7 +11,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
-import { generateCustomId } from "../utils/Helper";
+import { generateCustomId, getUserNameById } from "../utils/Helper";
 import { toast } from "sonner";
 
 export const handleCreateWorkSpace = async (
@@ -51,34 +51,39 @@ export const handleFtechWorkSpaces = async (tab, userId) => {
         collection(db, "WorkSpaces"),
         where("members", "array-contains", userId)
       );
-      snap = await getDocs(q);
-
-      return snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
     } else if (tab === "public") {
       q = query(collection(db, "WorkSpaces"), where("isPrivate", "==", false));
-      snap = await getDocs(q);
-
-      return snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
     } else if (tab === "invites") {
       q = query(
         collection(db, "Invites"),
         where("invitedUser.userId", "==", userId)
       );
-      snap = await getDocs(q);
-
-      return snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    } else {
+      return [];
     }
 
-    return [];
+    snap = await getDocs(q);
+
+    const workspaces = await Promise.all(
+      snap.docs.map(async (docSnap) => {
+        const data = docSnap.data();
+        let memberNames = [];
+        if (data.members?.length) {
+          const firstFourMembers = data.members.slice(0, 4);
+          memberNames = await Promise.all(
+            firstFourMembers.map((memberId) => getUserNameById(memberId))
+          );
+        }
+
+        return {
+          id: docSnap.id,
+          ...data,
+          memberNames: memberNames.filter(Boolean),
+        };
+      })
+    );
+
+    return workspaces;
   } catch (error) {
     console.error("Fetch workspaces error:", error);
     return [];
@@ -117,7 +122,6 @@ export const joinPublicWorkSpace = async (workspaceId, userId) => {
   }
 };
 
-
 export const handleDropWorkSpace = async (workSpaceId, currentUserId) => {
   if (!workSpaceId || !currentUserId) return;
 
@@ -145,6 +149,6 @@ export const handleDropWorkSpace = async (workSpaceId, currentUserId) => {
     toast.success("You have successfully left the workspace");
   } catch (err) {
     console.error("Error dropping workspace:", err);
-     toast.error("Failed to left the workspace");
+    toast.error("Failed to left the workspace");
   }
 };

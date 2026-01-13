@@ -18,7 +18,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { toast } from "sonner";
-import { generateCustomId } from "../utils/Helper";
+import { generateCustomId, ProfileByName } from "../utils/Helper";
 
 const Members = () => {
   const { currentUser } = useAuth();
@@ -56,8 +56,10 @@ const Members = () => {
           if (!userSnap.exists()) return null;
 
           const data = userSnap.data();
+          
           return {
             id: userId,
+            profileImage: data.profileImage,
             name: data.fullName,
             email: data.email,
             role: userId === wsData.createdBy ? "Admin" : "Member",
@@ -118,11 +120,11 @@ const Members = () => {
       });
 
       toast.success("Invite sent successfully");
-      setShowInvite(false)
+      setShowInvite(false);
       setEmail("");
     } catch (err) {
-       setShowInvite(false);
-       setEmail("");
+      setShowInvite(false);
+      setEmail("");
       console.error("Invite error:", err);
       toast.error("Failed to send invite");
     } finally {
@@ -148,6 +150,7 @@ const Members = () => {
       setInviteLoading(false);
     }
   };
+  
 
   return (
     <>
@@ -187,10 +190,11 @@ const Members = () => {
                 <div key={member.id} className="members-row">
                   <div className="members-user">
                     <div className="members-avatar">
-                      {member.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                      {member?.profileImage ? (
+                        <img src={member?.profileImage} alt="Avatar" />
+                      ) : (
+                        ProfileByName(member?.name)
+                      )}
                     </div>
 
                     <div className="members-user-info">

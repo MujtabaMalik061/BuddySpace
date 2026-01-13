@@ -72,6 +72,7 @@ const WorkSpaceDetails = () => {
       setJoinLoading(null);
     }
   };
+  
 
   if (!hasAccess) {
     return (

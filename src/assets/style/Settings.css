@@ -64,6 +64,13 @@
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-inverse);
+  overflow: hidden;
+}
+
+.settings-avatar img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .settings-avatar-actions {

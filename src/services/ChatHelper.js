@@ -1,56 +1,3 @@
-// import { db } from "../utils/FirebaseConfig";
-// import {
-//   doc,
-//   setDoc,
-//   updateDoc,
-//   onSnapshot,
-//   arrayUnion,
-//   Timestamp,
-//   getDoc,
-// } from "firebase/firestore";
-
-// export const listenToChatMessages = (workspaceId, setMessages, setLoading) => {
-//   if (!workspaceId) return;
-
-//   const chatRef = doc(db, "Chats", workspaceId);
-
-//   const unsubscribe = onSnapshot(chatRef, (snap) => {
-//     if (snap.exists()) {
-//       const data = snap.data();
-//       setMessages(data.messages || []);
-//     } else {
-//       setMessages([]);
-//     }
-//     setLoading(false);
-//   });
-
-//   return unsubscribe;
-// };
-
-// export const sendChatMessage = async (workspaceId, userId, message) => {
-//   if (!workspaceId || !userId || !message.trim()) return;
-
-//   const chatRef = doc(db, "Chats", workspaceId);
-
-//   const newMessage = {
-//     message: message.trim(),
-//     createdAt: Timestamp.now(),
-//     createdBy: userId,
-//   };
-
-//   const snap = await getDoc(chatRef);
-
-//   if (!snap.exists()) {
-//     await setDoc(chatRef, {
-//       messages: [newMessage],
-//     });
-//   } else {
-//     await updateDoc(chatRef, {
-//       messages: arrayUnion(newMessage),
-//     });
-//   }
-// };
-
 import {
   collection,
   onSnapshot,
@@ -60,6 +7,8 @@ import {
   doc,
   addDoc,
   Timestamp,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 
@@ -76,8 +25,6 @@ export const listenToChatMessages = (
 
   const unsubscribe = onSnapshot(q, async (snapshot) => {
     try {
-      setLoading(true);
-
       const rawMessages = snapshot.docs.map((docSnap) => ({
         id: docSnap.id,
         ...docSnap.data(),
@@ -121,4 +68,35 @@ export const sendChatMessage = async (workspaceId, userId, text) => {
     createdBy: userId,
     createdAt: Timestamp.now(),
   });
+};
+
+export const handleEditChatMessage = async (
+  isEdit,
+  { newMsg, editMsg, workspaceId }
+) => {
+  if (!isEdit || !editMsg || !newMsg.trim()) return;
+  try {
+    const messageRef = doc(db, "Chats", workspaceId, "messages", editMsg.id);
+    await updateDoc(messageRef, {
+      message: newMsg,
+      isEdited: true,
+    });
+  } catch (err) {
+    console.error("Error updating message:", err);
+  }
+};
+
+export const handleDeleteChatMessage = async (msgId, workspaceId) => {
+  if (!msgId || !workspaceId) return;
+
+  try {
+    const messageRef = doc(db, "Chats", workspaceId, "messages", msgId);
+
+    await deleteDoc(messageRef);
+
+    return true;
+  } catch (err) {
+    console.error("Error deleting message:", err);
+    throw err;
+  }
 };

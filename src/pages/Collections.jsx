@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../assets/style/Collections.css";
 import {
   Plus,
@@ -7,6 +7,9 @@ import {
   Image,
   X,
   Link,
+  ImageUp,
+  Trash2,
+  SquarePen,
 } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Loader from "../components/Loader";
@@ -14,31 +17,11 @@ import { useNavigate } from "react-router";
 import {
   addCollectionItem,
   listenCollectionsByWorkspace,
+  handleDeleteCollectionItem,
+  handleEditCollectionItem,
 } from "../services/CollectionsHelper";
 import { useAuth } from "../context/AuthContext";
-
-const initialItems = [
-  {
-    id: 1,
-    title: "Crash Landing on You",
-    description:
-      "A South Korean billionaire heiress accidentally paraglides into North Korea.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400",
-    link: "https://netflix.com",
-    comments: 12,
-  },
-  {
-    id: 2,
-    title: "Goblin",
-    description:
-      "A modern-day guardian angel must find a human bride to end his immortal life.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400",
-    link: "https://netflix.com",
-    comments: 8,
-  },
-];
+import { toast } from "sonner";
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -51,11 +34,21 @@ const Collections = () => {
   const [loading, setLoading] = useState(true);
   const [addLoading, setAddLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(null);
+  const fileInputRef = useRef(null);
+  const [localImageFile, setLocalImageFile] = useState(null);
+  const [thumbnailLink, setThumbnailLink] = useState("");
   const [form, setForm] = useState({
     title: "",
     description: "",
-    thumbnail: "",
+    thumbnail: thumbnailLink,
     link: "",
+  });
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    item: null,
   });
 
   useEffect(() => {
@@ -70,16 +63,60 @@ const Collections = () => {
     return () => unsub && unsub();
   }, [workSpaceId]);
 
+  useEffect(() => {
+    const closeMenu = () =>
+      setContextMenu({ visible: false, x: 0, y: 0, item: null });
+
+    const scrollableContainers = document.querySelectorAll(
+      ".collection-root, .collection-grid"
+    );
+
+    window.addEventListener("mousedown", closeMenu);
+    window.addEventListener("scroll", closeMenu);
+
+    scrollableContainers.forEach((c) =>
+      c.addEventListener("scroll", closeMenu)
+    );
+
+    return () => {
+      window.removeEventListener("mousedown", closeMenu);
+      window.removeEventListener("scroll", closeMenu);
+      scrollableContainers.forEach((c) =>
+        c.removeEventListener("scroll", closeMenu)
+      );
+    };
+  }, []);
+
   const addItem = async () => {
     if (!form.title.trim() || !workSpaceId) return;
+
     setAddLoading(true);
+
     try {
+      let finalThumbnail = thumbnailLink;
+      if (localImageFile) {
+        const formData = new FormData();
+        formData.append("image", localImageFile);
+        formData.append("workspaceId", workSpaceId);
+
+        const res = await fetch(
+          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        finalThumbnail = data.url;
+      }
+
       const data = {
         title: form.title,
         description: form.description,
-        thumbnail:
-          form.thumbnail ||
-          "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400",
+        thumbnail: finalThumbnail,
         link: form.link,
         comments: [],
         createdBy: currentUser?.id,
@@ -87,8 +124,9 @@ const Collections = () => {
       };
 
       await addCollectionItem(data);
-
       setForm({ title: "", description: "", thumbnail: "", link: "" });
+      setThumbnailLink("");
+      setLocalImageFile(null);
       setShowModal(false);
     } catch (err) {
       console.error("Add collection item error:", err);
@@ -97,10 +135,85 @@ const Collections = () => {
     }
   };
 
+  const handleEditItem = (item) => {
+    setIsEdit(item.id);
+    setForm({
+      title: item.title,
+      description: item.description,
+      link: item.link,
+    });
+    setThumbnailLink(item.thumbnail);
+    setLocalImageFile(null);
+    setShowModal(true);
+  };
+
+  const updateItem = async () => {
+    if (!isEdit || !form.title.trim()) return;
+
+    setAddLoading(true);
+
+    try {
+      let finalThumbnail = thumbnailLink;
+      if (localImageFile) {
+        const formData = new FormData();
+        formData.append("image", localImageFile);
+        formData.append("workspaceId", workSpaceId);
+
+        const res = await fetch(
+          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
+          { method: "POST", body: formData }
+        );
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        finalThumbnail = data.url;
+      }
+
+      await handleEditCollectionItem(isEdit, {
+        title: form.title,
+        description: form.description,
+        link: form.link,
+        thumbnail: finalThumbnail,
+      });
+
+      toast.success("Item updated successfully");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update item");
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
+  const handleDeleteItem = async (itemId) => {
+    if (!itemId) return toast.error("Item not found.");
+    await handleDeleteCollectionItem(itemId);
+  };
+
+  const onClose = () => {
+    setForm({ title: "", description: "", link: "" });
+    setThumbnailLink("");
+    setLocalImageFile(null);
+    setIsEdit(null);
+    setShowModal(false);
+  };
+
+  const handleRightClick = (e, item) => {
+    e.preventDefault();
+
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      item,
+    });
+  };
+
   return (
     <>
       <TopBar title="Collections" />
-
       <div className="collection-root">
         <div className="collection-header">
           <div>
@@ -129,6 +242,7 @@ const Collections = () => {
                   navigate(`/collection/${item?.id}`);
                 }}
                 className="collection-card"
+                onContextMenu={(e) => handleRightClick(e, item)}
               >
                 <div className="collection-thumb">
                   <img src={item.thumbnail} alt={item.title} />
@@ -163,15 +277,55 @@ const Collections = () => {
         ) : (
           <div className="no-data">No any collection found.</div>
         )}
+        {contextMenu.visible &&
+          contextMenu.item?.createdBy === currentUser?.id && (
+            <div
+              className="collection-card-menu-container"
+              style={{
+                position: "fixed",
+                top: contextMenu.y,
+                left: contextMenu.x,
+                zIndex: 9999,
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onContextMenu={(e) => e.preventDefault()}
+            >
+              <div
+                className="collection-card-menu-item success"
+                onClick={() => {
+                  handleEditItem(contextMenu.item);
+                  setContextMenu({ visible: false });
+                }}
+              >
+                <span className="icon">
+                  <SquarePen size={14} />
+                </span>
+                Edit Item
+              </div>
+
+              <div
+                className="collection-card-menu-item danger"
+                onClick={() => {
+                  handleDeleteItem(contextMenu.item.id);
+                  setContextMenu({ visible: false });
+                }}
+              >
+                <span className="icon">
+                  <Trash2 size={14} />
+                </span>
+                Delete Item
+              </div>
+            </div>
+          )}
 
         {showModal && (
           <div className="collection-modal-backdrop">
             <div className="collection-modal">
               <div className="collection-modal-header">
-                <h3>Add New Item</h3>
+                <h3>{isEdit ? "Edit Item" : "Add New Item"}</h3>
                 <button
                   className="collection-modal-header-close-btn"
-                  onClick={() => setShowModal(false)}
+                  onClick={onClose}
                 >
                   <X size={18} />
                 </button>
@@ -189,12 +343,58 @@ const Collections = () => {
                 <Image size={16} />
                 <input
                   className="collection-input"
-                  value={form.thumbnail}
-                  onChange={(e) =>
-                    setForm({ ...form, thumbnail: e.target.value })
-                  }
+                  style={{ paddingRight: "24px" }}
+                  value={thumbnailLink}
+                  onChange={(e) => setThumbnailLink(e.target.value)}
                 />
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setLocalImageFile(file);
+                    const previewUrl = URL.createObjectURL(file);
+                    setThumbnailLink(previewUrl);
+                  }}
+                />
+
+                {thumbnailLink.length > 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "17px",
+                      right: "4px",
+                      color: "var(--text-muted)",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setThumbnailLink("");
+                    }}
+                    className="icon"
+                  >
+                    <X size={16} />
+                  </span>
+                )}
               </div>
+
+              {thumbnailLink ? (
+                <label className="collection-add-Image-label">
+                  <img src={thumbnailLink} alt="Preview" />
+                </label>
+              ) : (
+                <label
+                  className="collection-add-Image-label"
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  <span className="icon">
+                    <ImageUp />
+                  </span>
+                  Upload locally
+                </label>
+              )}
 
               <label className="collection-label">Description</label>
               <textarea
@@ -218,7 +418,7 @@ const Collections = () => {
               <div className="collection-modal-actions">
                 <button
                   className="collection-btn-secondary"
-                  onClick={() => setShowModal(false)}
+                  onClick={onClose}
                   disabled={addLoading}
                 >
                   Cancel
@@ -226,9 +426,16 @@ const Collections = () => {
                 <button
                   disabled={addLoading}
                   className="collection-btn-primary"
-                  onClick={addItem}
+                  style={{ width: isEdit ? "105px" : "" }}
+                  onClick={isEdit ? updateItem : addItem}
                 >
-                  {addLoading ? <Loader color="#fff" size="16" /> : "Save Item"}
+                  {addLoading ? (
+                    <Loader color="#fff" size="16" />
+                  ) : isEdit ? (
+                    "Update Item"
+                  ) : (
+                    "Save Item"
+                  )}
                 </button>
               </div>
             </div>

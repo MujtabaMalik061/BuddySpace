@@ -304,7 +304,9 @@ export const CommentsArea = ({
               >
                 <div className="workspace-comment-header">
                   <strong className="font-12-16">
-                    {comment.createdBy?.name || "Anonymous"}
+                    {comment.createdBy?.fullName ||
+                      comment.createdBy?.name ||
+                      "Anonymous"}
                   </strong>
                   <span className="workspace-comment-date font-10-12">
                     {formatAgo(comment?.createdAt)}

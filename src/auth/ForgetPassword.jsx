@@ -4,11 +4,13 @@ import { ArrowLeft } from "lucide-react";
 import Loader from "../components/Loader";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../utils/FirebaseConfig";
-import { IMAGES } from "../services/Constants";
 import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
+import Offline from "../components/Offline";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
+  const { isOnline } = useAuth();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -36,55 +38,60 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div
-      style={{ backgroundImage: `url(${IMAGES.AuthBg})` }}
-      className="login-page-root"
-    >
-      <div className="login-page-overlay">
-        <div className="login-card">
-          <div className="login-header">
-            <h1 className="login-title font-15-20">Reset your password</h1>
-            <p className="login-subtitle font-12-16">
-              Enter your email and we'll send you a reset link
-            </p>
-          </div>
-
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="login-field">
-              <label className="login-label">Email</label>
-              <input
-                type="email"
-                className="login-input"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+    <>
+      {isOnline ? (
+        <div className="login-page-overlay">
+          <div className="login-card">
+            <div className="login-header">
+              <h1 className="login-title font-15-20">Reset your password</h1>
+              <p className="login-subtitle font-12-16">
+                Enter your email and we'll send you a reset link
+              </p>
             </div>
 
-            <button
-              type="submit"
-              className="login-submit-button"
-              disabled={loading}
-            >
-              {loading ? <Loader color="#fff" size="15" /> : "Send Reset Link"}
-            </button>
-          </form>
+            <form className="login-form" onSubmit={handleSubmit}>
+              <div className="login-field">
+                <label className="login-label">Email</label>
+                <input
+                  type="email"
+                  className="login-input"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-          <div className="login-footer">
-            <button
-              onClick={() => navigate("/signin")}
-              className="forgot-back-signin-btn"
-            >
-              <span className="icon">
-                <ArrowLeft size={16} />
-              </span>
-              Back to Sign In
-            </button>
+              <button
+                type="submit"
+                className="login-submit-button"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader color="#fff" size="15" />
+                ) : (
+                  "Send Reset Link"
+                )}
+              </button>
+            </form>
+
+            <div className="login-footer">
+              <button
+                onClick={() => navigate("/signin")}
+                className="forgot-back-signin-btn"
+              >
+                <span className="icon">
+                  <ArrowLeft size={16} />
+                </span>
+                Back to Sign In
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <Offline />
+      )}
+    </>
   );
 };
 

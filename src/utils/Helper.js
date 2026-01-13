@@ -59,3 +59,38 @@ export const formatAgo = (timestamp) => {
 
   return formatDistanceToNow(date, { addSuffix: true });
 };
+
+export const getUserNameById = async (userId) => {
+  try {
+    const userRef = doc(db, "Users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return null;
+    }
+
+    return userSnap.data().fullName;
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    return null;
+  }
+};
+
+export const getUserDetailsById = async (userId) => {
+  try {
+    const userRef = doc(db, "Users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return null;
+    }
+
+    return {
+      id: userSnap.id,
+      ...userSnap.data(),
+    };
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    return null;
+  }
+};

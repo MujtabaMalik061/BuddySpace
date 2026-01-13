@@ -45,6 +45,7 @@
 }
 
 .collection-card {
+  position: relative;
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: 14px;
@@ -57,6 +58,55 @@
 .collection-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover-sm);
+}
+
+.collection-card-menu-container {
+  opacity: 0;
+  background: var(--bg-surface);
+  width: 200px;
+  border: 1px solid var(--border-hover);
+  border-radius: 4px;
+  box-shadow: 0px 0px 8px #00000012;
+  overflow: hidden;
+  animation: fadeInUp 0.45s ease forwards;
+}
+
+.collection-card-menu-item {
+  padding: 11px 12px;
+  font-size: 14px;
+  border: none;
+  width: 100%;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-hover);
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 15px;
+}
+
+.collection-card-menu-item:hover {
+  background-color: var(--bg-muted);
+}
+
+.collection-card-menu-item:hover > .icon {
+  transform: scale(1.06);
+}
+
+.collection-card-menu-item.danger > .icon {
+  background-color: #ef444440;
+  color: var(--error);
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.collection-card-menu-item.success > .icon {
+  background-color: #22c55e30;
+  color: var(--success);
+  padding: 4px;
+  border-radius: 3px;
 }
 
 .collection-thumb img {
@@ -142,6 +192,32 @@
   display: block;
 }
 
+.collection-add-Image-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 150px;
+  width: 100%;
+  background: var(--bg-main);
+  border: 2px dashed var(--border-default);
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 18px 0;
+  transition: 0.9s;
+}
+
+.collection-add-Image-label img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.collection-add-Image-label:hover {
+  border-color: var(--primary);
+  text-decoration: underline;
+}
+
 .collection-modal-header-close-btn {
   font-size: 0px;
   background: #2563eb24;
@@ -165,6 +241,7 @@
   border-radius: 8px;
   border: 1px solid var(--border-default);
   background: var(--bg-main);
+  color: var(--text-primary);
   outline: 0;
   transition: 0.3s;
 }
@@ -183,7 +260,7 @@
   position: relative;
 }
 
-.collection-input-icon svg {
+.collection-input-icon > svg {
   position: absolute;
   top: 17px;
   left: 10px;

@@ -82,6 +82,7 @@
   border-radius: 50%;
   background-color: var(--bg-muted);
   border: 1px solid var(--border-default);
+  overflow: hidden;
 
   display: flex;
   align-items: center;
@@ -90,6 +91,12 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--primary);
+}
+
+.members-avatar img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .members-user-info {

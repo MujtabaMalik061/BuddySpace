@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Camera, Eye, EyeOff, Lock, Palette, Trash2 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import "../assets/style/Settings.css";
 import Loader from "../components/Loader";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-
 import {
   collection,
   query,
@@ -20,11 +19,13 @@ import TopBar from "../components/TopBar";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
-  const { currentUser } = useAuth();
-  const [loading, setLoading] = useState("");
-  const [isDeleted, setIsDeleted] = useState(false);
+  const { currentUser, loading } = useAuth();
+  const [loadingType, setLoadingType] = useState("");
 
   const [name, setName] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const fileInputRef = useRef(null);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [isCurrentPassword, setIsCurrentPassword] = useState(false);
@@ -41,13 +42,33 @@ const Settings = () => {
 
   const handleProfileUpdate = async () => {
     if (!currentUser) return;
-    setLoading("UpdateProfile");
+    setLoadingType("UpdateProfile");
     try {
+      let avatarUrl = currentUser.avatarUrl || "";
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("image", avatarFile);
+        formData.append("userId", currentUser.uid);
+
+        const res = await fetch(
+          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || "Failed to upload avatar");
+
+        avatarUrl = data.url;
+      }
+
       const q = query(
         collection(db, "Users"),
         where("authId", "==", currentUser.uid)
       );
-
       const snap = await getDocs(q);
 
       if (snap.empty) {
@@ -60,15 +81,18 @@ const Settings = () => {
       await updateDoc(userDocRef, {
         fullName: name,
         fullNameLowerCase: name.toLowerCase(),
+        profileImage: avatarUrl || currentUser?.profileImage || "",
         updatedAt: new Date(),
       });
 
       toast.success("Profile updated successfully!");
+      setAvatarFile(null);
+      setAvatarPreview("");
     } catch (error) {
       console.error("Profile update error:", error);
       toast.error("Failed to update profile.");
     } finally {
-      setLoading("");
+      setLoadingType("");
     }
   };
 
@@ -82,7 +106,7 @@ const Settings = () => {
       toast.error("New passwords do not match.");
       return;
     }
-    setLoading("UpdatePassword");
+    setLoadingType("UpdatePassword");
     try {
       const user = auth.currentUser;
       if (!user || !user.email) {
@@ -114,7 +138,7 @@ const Settings = () => {
         toast.error("Failed to update password.");
       }
     } finally {
-      setLoading("");
+      setLoadingType("");
     }
   };
 
@@ -142,11 +166,32 @@ const Settings = () => {
 
           <div className="settings-avatar-row">
             <div className="settings-avatar icon-40-80  font-15-20">
-              {ProfileByName(currentUser?.fullName)}
+              {loading ? (
+                <Loader color="#fff" size="18" />
+              ) : avatarPreview ? (
+                <img src={avatarPreview} alt="Avatar Preview" />
+              ) : currentUser?.profileImage ? (
+                <img src={currentUser?.profileImage} alt="Avatar" />
+              ) : (
+                ProfileByName(currentUser?.fullName)
+              )}
             </div>
             <div className="settings-avatar-actions">
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  setAvatarFile(file);
+                  setAvatarPreview(URL.createObjectURL(file));
+                }}
+              />
+
               <button
-                onClick={() => toast.error("Not available now.")}
+                onClick={() => fileInputRef.current.click()}
                 className="settings-outline-button padd-duo-6-10-and-14-10"
               >
                 <Camera size={16} /> Change Avatar
@@ -179,11 +224,11 @@ const Settings = () => {
           </div>
 
           <button
-            disabled={loading !== ""}
+            disabled={loadingType !== ""}
             onClick={handleProfileUpdate}
             className="settings-primary-button mar-t-12-18"
           >
-            {loading === "UpdateProfile" ? (
+            {loadingType === "UpdateProfile" ? (
               <Loader color="#fff" size="15" />
             ) : (
               "Save Changes"
@@ -313,11 +358,11 @@ const Settings = () => {
           </div>
 
           <button
-            disabled={loading !== ""}
+            disabled={loadingType !== ""}
             onClick={handlePasswordUpdate}
             className="settings-secondary-button mar-t-12-18"
           >
-            {loading === "UpdatePassword" ? (
+            {loadingType === "UpdatePassword" ? (
               <Loader size="15" />
             ) : (
               "Update Password"

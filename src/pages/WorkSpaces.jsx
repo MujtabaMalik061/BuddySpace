@@ -242,11 +242,11 @@ const WorkSpaces = () => {
 
                 <div className="workspaces-members">
                   <div className="workspaces-avatars">
-                    {workspace?.members?.slice(0, 4).map((member, index) => (
-                      <div key={index} className="workspaces-avatar">
-                        {member[0]}
-                      </div>
-                    ))}
+                    {workspace?.memberNames.map((member, index) => (
+                        <div key={index} className="workspaces-avatar">
+                          {member[0]}
+                        </div>
+                      ))}
 
                     {workspace?.members?.length > 4 && (
                       <div className="workspaces-avatar-more">

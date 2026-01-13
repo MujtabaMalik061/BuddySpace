@@ -165,6 +165,22 @@ export const addCommentToWorkSpace = async (
   }
 };
 
+export const getUsersMapByIds = async (userIds = []) => {
+  const uniqueIds = [...new Set(userIds)];
+  const usersMap = {};
+
+  await Promise.all(
+    uniqueIds.map(async (id) => {
+      const snap = await getDoc(doc(db, "Users", id));
+      if (snap.exists()) {
+        usersMap[id] = snap.data().fullName;
+      }
+    })
+  );
+
+  return usersMap;
+};
+
 export const listenWorkSpaceDetailsById = (
   workspaceId,
   currentUser,
@@ -177,7 +193,7 @@ export const listenWorkSpaceDetailsById = (
 
   const unsubscribe = onSnapshot(
     workspaceRef,
-    (docSnap) => {
+    async (docSnap) => {
       if (!docSnap.exists()) {
         setHasAccess(false);
         return;
@@ -185,25 +201,38 @@ export const listenWorkSpaceDetailsById = (
 
       const workspaceData = docSnap.data();
 
-      // ✅ if workspace is PUBLIC → always allow
       if (workspaceData.isPrivate === false) {
         setHasAccess(true);
-        setWorkSpaceDetails(workspaceData);
-        return;
+      } else {
+        const isMember =
+          workspaceData.members?.includes(currentUser.id) ||
+          workspaceData.createdBy === currentUser.id;
+
+        if (!isMember) {
+          setHasAccess(false);
+          return;
+        }
+        setHasAccess(true);
       }
 
-      // 🔒 if workspace is PRIVATE → check membership
-      const isMember =
-        workspaceData.members?.includes(currentUser.id) ||
-        workspaceData.createdBy === currentUser.id;
+      const comments = workspaceData.comments || [];
 
-      if (!isMember) {
-        setHasAccess(false);
-        return;
-      }
+      const userIds = comments.map((c) => c.createdBy?.id).filter(Boolean);
 
-      setHasAccess(true);
-      setWorkSpaceDetails(workspaceData);
+      const usersMap = await getUsersMapByIds(userIds);
+
+      const enrichedComments = comments.map((comment) => ({
+        ...comment,
+        createdBy: {
+          ...comment.createdBy,
+          fullName: usersMap[comment.createdBy.id] || comment.createdBy.name,
+        },
+      }));
+
+      setWorkSpaceDetails({
+        ...workspaceData,
+        comments: enrichedComments,
+      });
     },
     (error) => {
       console.error("Realtime workspace fetch error:", error);
@@ -213,4 +242,3 @@ export const listenWorkSpaceDetailsById = (
 
   return unsubscribe;
 };
-
