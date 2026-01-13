@@ -236,52 +236,6 @@ const Settings = () => {
           </button>
         </section>
 
-        {/* <section className="settings-section">
-        <div className="settings-section-header">
-          <Bell size={20} />
-          <div>
-            <h2 className="settings-section-title font-14-18">Notifications</h2>
-            <p className="settings-section-description font-12-16">
-              Configure how you receive notifications
-            </p>
-          </div>
-        </div>
-
-        <div className="settings-toggle-row">
-          <div>
-            <span className="settings-toggle-title">Email Notifications</span>
-            <p className="settings-toggle-description">
-              Receive email about new messages
-            </p>
-          </div>
-          <input type="checkbox" defaultChecked />
-        </div>
-
-        <div className="settings-divider" />
-
-        <div className="settings-toggle-row">
-          <div>
-            <span className="settings-toggle-title">Push Notifications</span>
-            <p className="settings-toggle-description">
-              Get push notifications on your device
-            </p>
-          </div>
-          <input type="checkbox" defaultChecked />
-        </div>
-
-        <div className="settings-divider" />
-
-        <div className="settings-toggle-row">
-          <div>
-            <span className="settings-toggle-title">Weekly Digest</span>
-            <p className="settings-toggle-description">
-              Weekly summary of workspace activity
-            </p>
-          </div>
-          <input type="checkbox" />
-        </div>
-      </section> */}
-
         <section className="settings-section padd-12-24">
           <div className="settings-section-header">
             <Lock size={20} />
@@ -392,27 +346,6 @@ const Settings = () => {
             </div>
             <input type="checkbox" value={theme} onChange={toggleTheme} />
           </div>
-        </section>
-
-        <section className="settings-section padd-12-24">
-          <div
-            style={{ color: "var(--error)" }}
-            className="settings-section-header"
-          >
-            <Trash2 color="var(--error)" size={20} />
-            <div>
-              <h2 className="settings-section-title font-14-18">Danger Zone</h2>
-              <p className="settings-section-description font-12-16">
-                Irreversible actions for your workspace
-              </p>
-            </div>
-          </div>
-          <button
-            style={{ background: "var(--error)" }}
-            className="settings-primary-button mar-t-12-18"
-          >
-            Delete Workspace
-          </button>
         </section>
       </div>
     </>

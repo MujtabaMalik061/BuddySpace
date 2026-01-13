@@ -13,7 +13,7 @@ import Chats from "./pages/Chats.jsx";
 import Collections from "./pages/Collections.jsx";
 import CollectionDetails from "./components/CollectionDetails.jsx";
 import Members from "./pages/Members.jsx";
-import Settings from "./pages/Settings.jsx"
+import Settings from "./pages/Settings.jsx";
 import WorkSpaceSettings from "./components/WorkSpaceSettings.jsx";
 import CreateWorkSpace from "./components/CreateWorkSpace.jsx";
 
