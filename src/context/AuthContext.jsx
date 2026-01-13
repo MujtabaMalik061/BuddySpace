@@ -12,45 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     try {
-  //       if (!user) {
-  //         setCurrentUser(null);
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       const q = query(
-  //         collection(db, "Users"),
-  //         where("authId", "==", user.uid)
-  //       );
-
-  //       const querySnapshot = await getDocs(q);
-
-  //       if (!querySnapshot.empty) {
-  //         const docSnap = querySnapshot.docs[0];
-
-  //         setCurrentUser({
-  //           docId: docSnap.id,
-  //           uid: user.uid,
-  //           ...docSnap.data(),
-  //         });
-  //       } else {
-  //         console.warn("No Firestore user found for:", user.uid);
-  //         setCurrentUser(null);
-  //       }
-  //     } catch (error) {
-  //       console.error("AuthContext error:", error);
-  //       setCurrentUser(null);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {

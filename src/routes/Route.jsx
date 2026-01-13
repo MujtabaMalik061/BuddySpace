@@ -29,7 +29,8 @@ export const ProtectedRoute = () => {
 if (
   !correctWorkSpace &&
   location.pathname !== "/workspaces" &&
-  location.pathname !== "/settings"
+  location.pathname !== "/settings" &&
+  location.pathname !== "/create-workspace"
 ) {
   toast.info("Please select a workspace first");
   return <Navigate to="/workspaces" replace />;
