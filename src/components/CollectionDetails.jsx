@@ -9,6 +9,7 @@ import Loader from "./Loader";
 import { useAuth } from "../context/AuthContext";
 import { addCommentToCollection } from "../services/CollectionsHelper";
 import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
+import { IMAGES } from "../services/Constants";
 
 const CollectionDetails = () => {
   const { collectionId } = useParams();
@@ -96,7 +97,7 @@ const CollectionDetails = () => {
 
         <div className="collection-details-card">
           <img
-            src={item.thumbnail}
+            src={item.thumbnail || IMAGES.FallBackImage}
             alt={item.title}
             className="collection-details-image"
           />
@@ -109,7 +110,7 @@ const CollectionDetails = () => {
               {item.description}
             </p>
 
-            {item.link && (
+            {item?.link && (
               <a
                 href={item.link}
                 target="_blank"

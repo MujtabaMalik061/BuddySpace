@@ -22,6 +22,7 @@ import {
 } from "../services/CollectionsHelper";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
+import { IMAGES } from "../services/Constants";
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -245,7 +246,10 @@ const Collections = () => {
                 onContextMenu={(e) => handleRightClick(e, item)}
               >
                 <div className="collection-thumb">
-                  <img src={item.thumbnail} alt={item.title} />
+                  <img
+                    src={item.thumbnail || IMAGES.FallBackImage}
+                    alt={item.title}
+                  />
                 </div>
 
                 <div className="collection-body">
@@ -257,18 +261,19 @@ const Collections = () => {
                       <MessageCircle size={14} />
                       {item?.comments?.length || 0}
                     </button>
-
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="collection-link-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <ExternalLink size={14} />
-                    </a>
+                    {item?.link && (
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="collection-link-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <ExternalLink size={14} />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
