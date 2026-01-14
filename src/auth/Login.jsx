@@ -19,24 +19,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/workspaces");
     } catch (err) {
       console.error("Login error:", err);
-      if (err.code === "auth/user-not-found") {
-        toast.error("No account found with this email.");
-      } else if (err.code === "auth/wrong-password") {
-        toast.error("Incorrect password.");
-      } else if (err.code === "auth/invalid-email") {
-        toast.error("Invalid email address.");
-      } else if (err.code === "auth/invalid-credential") {
-        toast.error("Invalid credential. Try again.");
-      } else {
-        toast.error("Failed to sign in. Try again.");
-      }
+      toast.error(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -130,3 +119,33 @@ const Login = () => {
 };
 
 export default Login;
+
+export const getAuthErrorMessage = (error) => {
+  if (!error?.code) return "Something went wrong. Please try again.";
+
+  switch (error.code) {
+    case "auth/user-not-found":
+      return "No account found with this email.";
+
+    case "auth/wrong-password":
+      return "Incorrect password.";
+
+    case "auth/invalid-credential":
+      return "Invalid email or password.";
+
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+
+    case "auth/user-disabled":
+      return "This account has been disabled.";
+
+    case "auth/network-request-failed":
+      return "Network error. Please check your internet connection.";
+
+    case "auth/too-many-requests":
+      return "Too many attempts. Please try again later.";
+
+    default:
+      return "Failed to sign in. Please try again.";
+  }
+};

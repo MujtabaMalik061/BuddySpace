@@ -24,7 +24,7 @@ const SignUp = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.err("Passwords do not match");
+      toast.error("Confirm Passwords do not match");
       return;
     }
 
@@ -51,7 +51,7 @@ const SignUp = () => {
       navigate("/workspaces");
     } catch (error) {
       console.error("Signup error:", error);
-      toast.error(error.message);
+      toast.error(getAuthErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -159,3 +159,36 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+export const getAuthErrorMessage = (error) => {
+  if (!error?.code) return "Something went wrong. Please try again.";
+
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      return "This email is already registered.";
+
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+
+    case "auth/weak-password":
+      return "Password should be at least 6 characters.";
+
+    case "auth/operation-not-allowed":
+      return "Email/password sign up is disabled.";
+
+    case "auth/network-request-failed":
+      return "Network error. Please check your internet connection.";
+
+    case "auth/too-many-requests":
+      return "Too many attempts. Please try again later.";
+
+    case "auth/internal-error":
+      return "An internal error occurred. Please try again.";
+
+    case "auth/user-disabled":
+      return "This account has been disabled.";
+
+    default:
+      return "Signup failed. Please try again.";
+  }
+};
