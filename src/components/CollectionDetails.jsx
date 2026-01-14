@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, User } from "lucide-react";
 import TopBar from "./TopBar";
 import { BackBtn, CommentsArea } from "./CustomComponents";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import { addCommentToCollection } from "../services/CollectionsHelper";
 import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
 import { IMAGES } from "../services/Constants";
+import { getUserNameById } from "../utils/Helper";
 
 const CollectionDetails = () => {
   const { collectionId } = useParams();
@@ -34,6 +35,7 @@ const CollectionDetails = () => {
         }
 
         const data = snap.data();
+        const creatorName = await getUserNameById(data.createdBy || "");
         const comments = data.comments || [];
         const userIds = comments.map((c) => c.createdBy?.id).filter(Boolean);
         const usersMap = await getUsersMapByIds(userIds);
@@ -48,6 +50,7 @@ const CollectionDetails = () => {
         setItem({
           id: snap.id,
           ...data,
+          creatorName,
           comments: enrichedComments,
         });
 
@@ -61,7 +64,6 @@ const CollectionDetails = () => {
 
     return () => unsub();
   }, [collectionId]);
-  
 
   if (loading) {
     return (
@@ -86,6 +88,12 @@ const CollectionDetails = () => {
     );
   }
 
+  const normalizedLink =
+    item?.link?.startsWith("http://") || item?.link?.startsWith("https://")
+      ? item?.link
+      : `https://${item?.link}`;
+
+
   return (
     <>
       <TopBar title="Collection Details" />
@@ -109,18 +117,32 @@ const CollectionDetails = () => {
             <p className="collection-details-description font-12-16">
               {item.description}
             </p>
-
-            {item?.link && (
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="collection-details-watch padd-duo-6-10-and-14-10"
-              >
-                <ExternalLink size={16} />
-                Watch Now
-              </a>
-            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              {item?.creatorName && (
+                <p className="collection-details-createdby font-12-16">
+                  <strong className="icon" style={{ marginRight: "4px" }}>
+                    <User size={14} color="var(--text-primary)" />
+                  </strong>
+                  By: {item.creatorName}
+                </p>
+              )}
+              {item?.link && (
+                <a
+                  href={normalizedLink}
+                  target="_blank"
+                  className="collection-details-watch padd-duo-6-10-and-14-10"
+                >
+                  <ExternalLink size={16} />
+                  Watch Now
+                </a>
+              )}
+            </div>
           </div>
         </div>
 

@@ -236,48 +236,54 @@ const Collections = () => {
           <Loader style={{ height: "60vh", width: "100%" }} />
         ) : items?.length > 0 ? (
           <div className="collection-grid">
-            {items.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  navigate(`/collection/${item?.id}`);
-                }}
-                className="collection-card"
-                onContextMenu={(e) => handleRightClick(e, item)}
-              >
-                <div className="collection-thumb">
-                  <img
-                    src={item.thumbnail || IMAGES.FallBackImage}
-                    alt={item.title}
-                  />
-                </div>
+            {items.map((item, index) => {
+              const normalizedLink =
+                item?.link?.startsWith("http://") ||
+                item?.link?.startsWith("https://")
+                  ? item?.link
+                  : `https://${item?.link}`;
+              return (
+                <div
+                  key={index}
+                  onClick={() => {
+                    navigate(`/collection/${item?.id}`);
+                  }}
+                  className="collection-card"
+                  onContextMenu={(e) => handleRightClick(e, item)}
+                >
+                  <div className="collection-thumb">
+                    <img
+                      src={item.thumbnail || IMAGES.FallBackImage}
+                      alt={item.title}
+                    />
+                  </div>
 
-                <div className="collection-body">
-                  <h3 className="collection-card-title">{item.title}</h3>
-                  <p className="collection-card-desc">{item.description}</p>
+                  <div className="collection-body">
+                    <h3 className="collection-card-title">{item.title}</h3>
+                    <p className="collection-card-desc">{item.description}</p>
 
-                  <div className="collection-card-actions">
-                    <button className="collection-comments-btn">
-                      <MessageCircle size={14} />
-                      {item?.comments?.length || 0}
-                    </button>
-                    {item?.link && (
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="collection-link-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <ExternalLink size={14} />
-                      </a>
-                    )}
+                    <div className="collection-card-actions">
+                      <button className="collection-comments-btn">
+                        <MessageCircle size={14} />
+                        {item?.comments?.length || 0}
+                      </button>
+                      {item?.link && (
+                        <a
+                          href={normalizedLink}
+                          target="_blank"
+                          className="collection-link-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="no-data">No any collection found.</div>

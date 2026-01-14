@@ -348,6 +348,13 @@
   margin: 6px 0px 16px;
 }
 
+.collection-details-createdby {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
 .collection-details-watch {
   display: inline-flex;
   align-items: center;
