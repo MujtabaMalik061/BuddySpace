@@ -40,14 +40,14 @@ export const AuthProvider = ({ children }) => {
             "private",
             userData.id
           );
-
           const storedWorkspace = JSON.parse(
             localStorage.getItem("selectedWorkspace")
           );
-
           if (
             storedWorkspace &&
-            workSpaces.some((ws) => ws.id === storedWorkspace.id)
+            workSpaces.some(
+              (ws) => ws.workspaceId === storedWorkspace.workspaceId
+            )
           ) {
             setCorrectWorkSpace(true);
           } else {
