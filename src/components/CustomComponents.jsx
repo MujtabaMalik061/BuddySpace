@@ -233,20 +233,23 @@ export const CommentsArea = ({
   const handleSubmit = async () => {
     if (!comment) return toast.error("comment is required!!");
     setIsCommentActive(true);
-    setTimeout(() => {
-      setIsCommentLoading(true);
-      setIsCommentActive(false);
-    }, 800);
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    setIsCommentLoading(true);
+
     try {
       await AtSubmit();
       setComment("");
-      toast.success("comment added sucessfully.");
+      toast.success("Comment added successfully.");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to add comment");
     } finally {
       setIsCommentLoading(false);
+      setIsCommentActive(false);
     }
   };
+
+
   return (
     <div className="workspace-detail-card mar-t-20-40 padd-10-20">
       <div className="workspace-detail-comment-header-container">
