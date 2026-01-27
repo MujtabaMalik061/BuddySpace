@@ -115,7 +115,7 @@ const WorkSpaceDetails = () => {
                 {currentUser?.id === workSpaceDetails?.createdBy ? (
                   <button
                     onClick={() =>
-                      navigate(`/workspace-settings/${workSpaceDetails?.id}`)
+                      navigate(`/workspace-settings/${workSpaceDetails?.workspaceId}`)
                     }
                     className="workspaces-settings-btn"
                   >
@@ -125,12 +125,12 @@ const WorkSpaceDetails = () => {
                   !workSpaceDetails?.members?.includes(currentUser?.id) ? (
                   <button
                     onClick={() =>
-                      handlejoinPublicWorkSpace(workSpaceDetails?.id)
+                      handlejoinPublicWorkSpace(workSpaceDetails?.workspaceId)
                     }
                     className="workspaces-settings-btn"
                     disabled={joinLoading}
                   >
-                    {joinLoading === workSpaceDetails?.id ? (
+                    {joinLoading === workSpaceDetails?.workspaceId ? (
                       <Loader size="10" color="var(--text-primary)" />
                     ) : (
                       <BadgePlus size={16} />

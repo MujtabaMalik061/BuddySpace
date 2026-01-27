@@ -13,6 +13,32 @@ export const AuthProvider = ({ children }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
+    const checkWorkspace = async () => {
+      if (!currentUser) return;
+
+      const workSpaces = await handleFtechWorkSpaces("private", currentUser.id);
+      const storedWorkspace = JSON.parse(
+        localStorage.getItem("selectedWorkspace"),
+      );
+
+      if (
+        storedWorkspace &&
+        workSpaces.some((ws) => ws.id === storedWorkspace.workspaceId)
+      ) {
+        setCorrectWorkSpace(true);
+      } else {
+        setCorrectWorkSpace(false);
+      }
+    };
+
+    checkWorkspace();
+    const handleStorageChange = () => checkWorkspace();
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [currentUser]);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         if (!user) {
@@ -23,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
         const q = query(
           collection(db, "Users"),
-          where("authId", "==", user.uid)
+          where("authId", "==", user.uid),
         );
         const querySnapshot = await getDocs(q);
 
@@ -35,33 +61,13 @@ export const AuthProvider = ({ children }) => {
             ...docSnap.data(),
           };
           setCurrentUser(userData);
-
-          const workSpaces = await handleFtechWorkSpaces(
-            "private",
-            userData.id
-          );
-          const storedWorkspace = JSON.parse(
-            localStorage.getItem("selectedWorkspace")
-          );
-          if (
-            storedWorkspace &&
-            workSpaces.some(
-              (ws) => ws.workspaceId === storedWorkspace.workspaceId
-            )
-          ) {
-            setCorrectWorkSpace(true);
-          } else {
-            setCorrectWorkSpace(false);
-          }
         } else {
           console.warn("No Firestore user found for:", user.uid);
           setCurrentUser(null);
-          setCorrectWorkSpace(false);
         }
       } catch (error) {
         console.error("AuthContext error:", error);
         setCurrentUser(null);
-        setCorrectWorkSpace(false);
       } finally {
         setLoading(false);
       }

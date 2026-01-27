@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Lock, Trash2, AlertTriangle, FolderOpen } from "lucide-react";
+import {
+  Lock,
+  Trash2,
+  AlertTriangle,
+  FolderOpen,
+  Handshake,
+} from "lucide-react";
 import "../assets/style/Settings.css";
 import Loader from "../components/Loader";
 import TopBar from "../components/TopBar";
 import { useAuth } from "../context/AuthContext";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../utils/FirebaseConfig";
 import {
   fetchWorkspaceById,
   handleWorkSpaceUpdate,
   handleVisibilityUpdate,
   handleDeleteWorkspace,
+  getUsersMapByIds,
 } from "../services/WorkSpaceSettingsHelper";
 import { toast } from "sonner";
+import { Selector } from "./CustomComponents";
 
 const WorkSpaceSettings = () => {
   const { currentUser } = useAuth();
@@ -23,19 +32,41 @@ const WorkSpaceSettings = () => {
   const [workspace, setWorkspace] = useState(null);
   const [hasAccess, setHasAccess] = useState(true);
 
+  const [members, setMembers] = useState([]);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [workSpaceOwner, setWorkSpaceOwner] = useState(null);
 
   useEffect(() => {
     fetchWorkSpace();
   }, [currentUser, workspaceId]);
 
+  useEffect(() => {
+    if (workspace?.members?.length) {
+      getAllMembersDetails(workspace.members);
+    }
+    if (workspace?.createdBy) {
+      setWorkSpaceOwner(workspace.createdBy);
+    }
+  }, [workspace]);
+
+  const getAllMembersDetails = async (memberIds) => {
+    if (!memberIds?.length) return;
+    const usersMap = await getUsersMapByIds(memberIds);
+    const memberDetails = memberIds.map((id) => ({
+      uid: id,
+      fullName: usersMap[id] || "Unknown",
+    }));
+
+    setMembers(memberDetails);
+  };
+
   const fetchWorkSpace = async () => {
     if (!currentUser || !workspaceId) return;
     try {
       setLoading("fetching");
-
       await fetchWorkspaceById(
         workspaceId,
         currentUser,
@@ -43,32 +74,72 @@ const WorkSpaceSettings = () => {
         setName,
         setDescription,
         setIsPrivate,
-        setHasAccess
+        setHasAccess,
       );
     } finally {
       setLoading("");
     }
   };
 
-  if (loading === "fetching") return <Loader/>
+  const handleTransferWorkspace = async () => {
+    try {
+      if (workspace.createdBy !== currentUser.id) {
+        toast.error("Only the workspace owner can transfer ownership");
+        return;
+      }
 
-    if (!hasAccess) {
-      return (
-        <div className="no-access-wrapper">
-          <div className="no-access-card">
-            <AlertTriangle size={40} color="var(--error)" />
-            <h2>No Access</h2>
-            <p>You don’t have permission to view or manage this workspace.</p>
-            <button
-              onClick={() => navigate(-1)}
-              className="settings-primary-button"
-            >
-              Go Back
-            </button>
-          </div>
-        </div>
-      );
+      if (workSpaceOwner === workspace.createdBy) {
+        toast.warning("Please select a different member");
+        return;
+      }
+
+      const isMember = workspace.members.includes(workSpaceOwner);
+      if (!isMember) {
+        toast.error("Selected user is not a workspace member");
+        return;
+      }
+
+      setLoading("TransferWorkspace");
+
+      const workspaceRef = doc(db, "WorkSpaces", workspaceId);
+
+      await updateDoc(workspaceRef, {
+        createdBy: workSpaceOwner,
+      });
+
+      toast.success("Workspace ownership transferred successfully");
+
+      setWorkspace((prev) => ({
+        ...prev,
+        createdBy: workSpaceOwner,
+      }));
+    } catch (error) {
+      console.error("Transfer workspace error:", error);
+      toast.error("Failed to transfer workspace");
+    } finally {
+      setLoading("");
     }
+  };
+
+  if (loading === "fetching") return <Loader />;
+
+  if (!hasAccess) {
+    return (
+      <div className="no-access-wrapper">
+        <div className="no-access-card">
+          <AlertTriangle size={40} color="var(--error)" />
+          <h2>No Access</h2>
+          <p>You don’t have permission to view or manage this workspace.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="settings-primary-button"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!workspace) {
     return (
@@ -184,6 +255,44 @@ const WorkSpaceSettings = () => {
               <Loader size="15" />
             ) : (
               "Update Visibility"
+            )}
+          </button>
+        </section>
+
+        <section className="settings-section  padd-12-24">
+          <div className="settings-section-header">
+            <Handshake size={20} />
+            <div>
+              <h2 className="settings-section-title font-14-18">
+                Transfer Workspace
+              </h2>
+              <p className="settings-section-description font-12-16">
+                Transfer ownership of this workspace to another member
+              </p>
+            </div>
+          </div>
+
+          <div className="settings-transfer-owner-field">
+            <Selector
+              disabled={loading || workspace.createdBy !== currentUser.id}
+              filter={workSpaceOwner}
+              setFilter={setWorkSpaceOwner}
+              options={members.map((member) => ({
+                filter: member.uid,
+                label: member.fullName,
+              }))}
+            />
+          </div>
+
+          <button
+            disabled={loading !== ""}
+            onClick={handleTransferWorkspace}
+            className="settings-secondary-button mar-t-12-18"
+          >
+            {loading === "TransferWorkspace" ? (
+              <Loader size="15" />
+            ) : (
+              "Transfer Workspace"
             )}
           </button>
         </section>

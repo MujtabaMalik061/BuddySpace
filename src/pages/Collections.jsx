@@ -17,20 +17,24 @@ import { useNavigate } from "react-router";
 import {
   addCollectionItem,
   listenCollectionsByWorkspace,
+  loadMoreCollections,
   handleDeleteCollectionItem,
   handleEditCollectionItem,
 } from "../services/CollectionsHelper";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import { IMAGES } from "../services/Constants";
+import { SearchInput } from "../components/CustomComponents";
+import { useDebounce } from "../utils/hooks/useDebounce";
 
 const Collections = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const selectedWorkspace = JSON.parse(
-    localStorage.getItem("selectedWorkspace")
+    localStorage.getItem("selectedWorkspace"),
   );
   const workSpaceId = selectedWorkspace?.id;
+  const [search, setSearch] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addLoading, setAddLoading] = useState(false);
@@ -39,6 +43,12 @@ const Collections = () => {
   const fileInputRef = useRef(null);
   const [localImageFile, setLocalImageFile] = useState(null);
   const [thumbnailLink, setThumbnailLink] = useState("");
+
+  // pagination
+  const [lastDoc, setLastDoc] = useState(null);
+  const [lastIndex, setLastIndex] = useState(false);
+  const [loadMoreLoading, setLoadMoreLoading] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -52,38 +62,47 @@ const Collections = () => {
     item: null,
   });
 
+  const debouncedSearch = useDebounce(search, 500);
+
   useEffect(() => {
     if (!workSpaceId) return;
 
+    setItems([]);
+    setLastDoc(null);
+    setLastIndex(false);
+
     const unsub = listenCollectionsByWorkspace(
       workSpaceId,
+      debouncedSearch.trim(),
       setItems,
-      setLoading
+      setLastDoc,
+      setLastIndex,
+      setLoading,
     );
 
     return () => unsub && unsub();
-  }, [workSpaceId]);
+  }, [workSpaceId, debouncedSearch]);
 
   useEffect(() => {
     const closeMenu = () =>
       setContextMenu({ visible: false, x: 0, y: 0, item: null });
 
     const scrollableContainers = document.querySelectorAll(
-      ".collection-root, .collection-grid"
+      ".collection-root, .collection-grid",
     );
 
     window.addEventListener("mousedown", closeMenu);
     window.addEventListener("scroll", closeMenu);
 
     scrollableContainers.forEach((c) =>
-      c.addEventListener("scroll", closeMenu)
+      c.addEventListener("scroll", closeMenu),
     );
 
     return () => {
       window.removeEventListener("mousedown", closeMenu);
       window.removeEventListener("scroll", closeMenu);
       scrollableContainers.forEach((c) =>
-        c.removeEventListener("scroll", closeMenu)
+        c.removeEventListener("scroll", closeMenu),
       );
     };
   }, []);
@@ -105,7 +124,7 @@ const Collections = () => {
           {
             method: "POST",
             body: formData,
-          }
+          },
         );
 
         const data = await res.json();
@@ -162,7 +181,7 @@ const Collections = () => {
 
         const res = await fetch(
           `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
-          { method: "POST", body: formData }
+          { method: "POST", body: formData },
         );
 
         const data = await res.json();
@@ -212,6 +231,18 @@ const Collections = () => {
     });
   };
 
+  const handleLoadMore = () => {
+    loadMoreCollections(
+      workSpaceId,
+      debouncedSearch.trim(),
+      lastDoc,
+      setItems,
+      setLastDoc,
+      setLastIndex,
+      setLoadMoreLoading,
+    );
+  };
+
   return (
     <>
       <TopBar title="Collections" />
@@ -232,59 +263,80 @@ const Collections = () => {
             Add Item
           </button>
         </div>
+        <SearchInput
+          value={search}
+          setValue={setSearch}
+          placeholder="Search collections..."
+          margin="20px 0"
+        />
         {loading ? (
           <Loader style={{ height: "60vh", width: "100%" }} />
         ) : items?.length > 0 ? (
-          <div className="collection-grid">
-            {items.map((item, index) => {
-              const normalizedLink =
-                item?.link?.startsWith("http://") ||
-                item?.link?.startsWith("https://")
-                  ? item?.link
-                  : `https://${item?.link}`;
-              return (
-                <div
-                  key={index}
-                  onClick={() => {
-                    navigate(`/collection/${item?.id}`);
-                  }}
-                  className="collection-card"
-                  onContextMenu={(e) => handleRightClick(e, item)}
-                >
-                  <div className="collection-thumb">
-                    <img
-                      src={item.thumbnail || IMAGES.FallBackImage}
-                      alt={item.title}
-                    />
-                  </div>
+          <>
+            <div className="collection-grid">
+              {items.map((item, index) => {
+                const normalizedLink =
+                  item?.link?.startsWith("http://") ||
+                  item?.link?.startsWith("https://")
+                    ? item?.link
+                    : `https://${item?.link}`;
+                return (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      navigate(`/collection/${item?.id}`);
+                    }}
+                    className="collection-card"
+                    onContextMenu={(e) => handleRightClick(e, item)}
+                  >
+                    <div className="collection-thumb">
+                      <img
+                        src={item.thumbnail || IMAGES.FallBackImage}
+                        alt={item.title}
+                      />
+                    </div>
 
-                  <div className="collection-body">
-                    <h3 className="collection-card-title">{item.title}</h3>
-                    <p className="collection-card-desc">{item.description}</p>
+                    <div className="collection-body">
+                      <h3 className="collection-card-title">{item.title}</h3>
+                      <p className="collection-card-desc">{item.description}</p>
 
-                    <div className="collection-card-actions">
-                      <button className="collection-comments-btn">
-                        <MessageCircle size={14} />
-                        {item?.comments?.length || 0}
-                      </button>
-                      {item?.link && (
-                        <a
-                          href={normalizedLink}
-                          target="_blank"
-                          className="collection-link-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                        >
-                          <ExternalLink size={14} />
-                        </a>
-                      )}
+                      <div className="collection-card-actions">
+                        <button className="collection-comments-btn">
+                          <MessageCircle size={14} />
+                          {item?.comments?.length || 0}
+                        </button>
+                        {item?.link && (
+                          <a
+                            href={normalizedLink}
+                            target="_blank"
+                            className="collection-link-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <ExternalLink size={14} />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
+                );
+              })}
+            </div>
+            <div className="load-more-container">
+              {items?.length > 0 && (
+                <div className="load-more-container">
+                  {loadMoreLoading ? (
+                    <Loader style={{ height: "150px", width: "100%" }} />
+                  ) : !lastIndex ? (
+                    <button onClick={handleLoadMore} className="load-more-btn">
+                      Load More
+                    </button>
+                  ) : null}
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </div>
+          </>
         ) : (
           <div className="no-data">No any collection found.</div>
         )}

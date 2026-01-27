@@ -33,6 +33,8 @@ const WorkSpaces = () => {
   useEffect(() => {
     if (currentUser) {
       getWorkSpaces();
+    } else {
+      setLoading(false);
     }
   }, [tab, currentUser]);
 
@@ -77,7 +79,7 @@ const WorkSpaces = () => {
       const wsRef = doc(
         db,
         "WorkSpaces",
-        invite.workSpace?.workSpaceId || invite.id
+        invite.workSpace?.workSpaceId || invite.id,
       );
       const wsSnap = await getDoc(wsRef);
       if (!wsSnap.exists()) return console.error("Workspace not found");
@@ -98,7 +100,6 @@ const WorkSpaces = () => {
       setAcceptLoading(null);
     }
   };
-  
 
   return (
     <>
@@ -243,10 +244,10 @@ const WorkSpaces = () => {
                 <div className="workspaces-members">
                   <div className="workspaces-avatars">
                     {workspace?.memberNames.map((member, index) => (
-                        <div key={index} className="workspaces-avatar">
-                          {member[0]}
-                        </div>
-                      ))}
+                      <div key={index} className="workspaces-avatar">
+                        {member[0]}
+                      </div>
+                    ))}
 
                     {workspace?.members?.length > 4 && (
                       <div className="workspaces-avatar-more">

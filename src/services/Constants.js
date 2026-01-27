@@ -47,3 +47,5 @@ export const SidebarMenuItems = [
     startsWith: ["/settings"],
   },
 ];
+
+export const limit = 20;

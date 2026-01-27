@@ -212,6 +212,12 @@
   background-color: var(--bg-hover);
   border-color: var(--border-hover);
 }
+.settings-transfer-owner-field .customers-filter-container,.settings-transfer-owner-field .customers-filter-selector,
+.settings-transfer-owner-field .customers-filter-selector> span:first-child,
+.settings-transfer-owner-field .customers-filter-selection-container 
+{
+  width: 100%;
+}
 
 .settings-toggle-row {
   display: flex;

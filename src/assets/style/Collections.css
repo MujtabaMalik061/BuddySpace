@@ -52,7 +52,9 @@
   cursor: pointer;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .collection-card:hover {
@@ -161,6 +163,23 @@
 
 .collection-link-btn:hover {
   color: var(--primary);
+}
+
+.load-more-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+}
+
+.load-more-btn {
+  cursor: pointer;
+  padding: 7px 10px;
+  border-radius: 3px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
 }
 
 .collection-modal-backdrop {
@@ -325,6 +344,39 @@
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: 28px;
+}
+
+.collection-details-image-container {
+  position: relative;
+  min-height: 320px;
+  width: 100%;
+}
+
+.collection-details-image-fit-container {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  width: fit-content;
+  padding: 4px 7px;
+  border: 1.5px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.collection-details-image-fit-container > span {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.collection-details-image-fit-active {
+  background-color: var(--primary);
+  color: #fff;
 }
 
 .collection-details-image {

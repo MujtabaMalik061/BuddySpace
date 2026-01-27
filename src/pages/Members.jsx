@@ -3,7 +3,7 @@ import "../assets/style/Members.css";
 import { UserPlus, MoreHorizontal, Mail, Shield, X } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Loader from "../components/Loader";
-import { IconSelector } from "../components/CustomComponents";
+import { IconSelector, SearchInput } from "../components/CustomComponents";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../utils/FirebaseConfig";
 import {
@@ -27,6 +27,7 @@ const Members = () => {
   const selectedWorkSpaceId =
     storedWorkspace?.workspaceId || storedWorkspace?.id;
 
+  const [search, setSearch] = useState("");
   const [members, setMembers] = useState([]);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
@@ -151,6 +152,15 @@ const Members = () => {
     }
   };
   
+const filteredMembers = members.filter((member) => {
+  const query = search.toLowerCase();
+
+  return (
+    member?.name?.toLowerCase().includes(query) ||
+    member?.email?.toLowerCase().includes(query)
+  );
+});
+
 
   return (
     <>
@@ -172,6 +182,12 @@ const Members = () => {
             Invite Members
           </button>
         </div>
+        <SearchInput
+          value={search}
+          setValue={setSearch}
+          placeholder="Search members..."
+          margin="20px 0"
+        />
         {loading ? (
           <div className="members-card no-data">
             <Loader />
@@ -181,40 +197,44 @@ const Members = () => {
             <div className="members-card-header">
               <h3>
                 <Shield size={18} color="#3c83f6" />
-                <span>{members.length} Members</span>
+                <span>{filteredMembers.length} Members</span>
               </h3>
             </div>
 
             <div className="members-card-body">
-              {members.map((member) => (
-                <div key={member.id} className="members-row">
+              {filteredMembers.map((member) => (
+                <div key={member?.id} className="members-row">
                   <div className="members-user">
                     <div className="members-avatar">
                       {member?.profileImage ? (
                         <img src={member?.profileImage} alt="Avatar" />
                       ) : (
-                        ProfileByName(member?.name)
+                        ProfileByName(member?.name || "N/A")
                       )}
                     </div>
 
                     <div className="members-user-info">
-                      <span className="members-user-name">{member.name}</span>
-                      <span className="members-user-email">{member.email}</span>
+                      <span className="members-user-name">
+                        {member?.name || "N/A"}
+                      </span>
+                      <span className="members-user-email">
+                        {member?.email || "N/A"}
+                      </span>
                     </div>
                   </div>
 
                   <div className="members-meta">
                     <span
-                      className={`members-role members-role-${member.role.toLowerCase()}`}
+                      className={`members-role members-role-${member?.role?.toLowerCase()}`}
                     >
-                      {member.role}
+                      {member?.role || "N/A"}
                     </span>
 
                     <span className="members-joined">
-                      Joined {member.joinedAt}
+                      Joined {member?.joinedAt || "N/A"}
                     </span>
 
-                    {member.role === "Member" &&
+                    {member?.role === "Member" &&
                       currentUser.id === storedWorkspace?.createdBy && (
                         <IconSelector
                           icon={<MoreHorizontal size={16} />}

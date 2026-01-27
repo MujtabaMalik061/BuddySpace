@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../assets/style/CustomComponents.css";
 import {
   ArrowLeft,
   Check,
   ChevronDown,
   ChevronUp,
+  Search,
   SendHorizonal,
 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -36,6 +37,15 @@ export const Selector = ({
     };
   }, []);
 
+  const sortedOptions = useMemo(() => {
+    if (!options || !filter) return options;
+
+    const selected = options.find((opt) => opt.filter === filter);
+    const others = options.filter((opt) => opt.filter !== filter);
+
+    return selected ? [selected, ...others] : options;
+  }, [options, filter]);
+
   const selectedOption = options?.find((option) => option.filter === filter);
 
   return (
@@ -59,8 +69,8 @@ export const Selector = ({
               : ""
           }`}
         >
-          {options &&
-            options.map((option, index) => {
+          {sortedOptions &&
+            sortedOptions.map((option, index) => {
               const isActive = option?.filter === filter;
               return (
                 <button
@@ -147,6 +157,29 @@ export const IconSelector = ({
           })}
         </div>
       )}
+    </div>
+  );
+};
+
+export const SearchInput = ({
+  disabled=false,
+  value,
+  setValue,
+  placeholder = "Search...",
+  margin = "",
+}) => {
+  return (
+    <div className="customers-search-box" style={{ margin }}>
+      <Search className="customers-search-icon" />
+      <input
+        disabled={disabled}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        placeholder={placeholder}
+        className="customers-search-input"
+      />
     </div>
   );
 };
@@ -248,7 +281,6 @@ export const CommentsArea = ({
       setIsCommentActive(false);
     }
   };
-
 
   return (
     <div className="workspace-detail-card mar-t-20-40 padd-10-20">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ExternalLink, User } from "lucide-react";
+import { Expand, ExternalLink, Shrink, User } from "lucide-react";
 import TopBar from "./TopBar";
 import { BackBtn, CommentsArea } from "./CustomComponents";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -18,6 +18,7 @@ const CollectionDetails = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
+  const [imagePosition, setImagePosition] = useState("cover");
 
   useEffect(() => {
     if (!collectionId) return;
@@ -59,7 +60,7 @@ const CollectionDetails = () => {
       (error) => {
         console.error("Realtime fetch error:", error);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsub();
@@ -93,7 +94,6 @@ const CollectionDetails = () => {
       ? item?.link
       : `https://${item?.link}`;
 
-
   return (
     <>
       <TopBar title="Collection Details" />
@@ -104,11 +104,36 @@ const CollectionDetails = () => {
         </div>
 
         <div className="collection-details-card">
-          <img
-            src={item.thumbnail || IMAGES.FallBackImage}
-            alt={item.title}
-            className="collection-details-image"
-          />
+          <div className="collection-details-image-container">
+            <div className="collection-details-image-fit-container">
+              <span
+                onClick={() => setImagePosition("cover")}
+                className={
+                  imagePosition === "cover"
+                    ? "collection-details-image-fit-active icon "
+                    : "icon"
+                }
+              >
+                <Expand size={18} />
+              </span>
+              <span
+                onClick={() => setImagePosition("contain")}
+                className={
+                  imagePosition === "contain"
+                    ? "collection-details-image-fit-active icon "
+                    : "icon"
+                }
+              >
+                <Shrink size={18} />
+              </span>
+            </div>
+            <img
+              style={{ objectFit: imagePosition }}
+              src={item.thumbnail || IMAGES.FallBackImage}
+              alt={item.title}
+              className="collection-details-image"
+            />
+          </div>
 
           <div className="collection-details-body padd-10-20">
             <h1 className="collection-details-title font-15-20">
