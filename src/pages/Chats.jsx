@@ -14,8 +14,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { toast } from "sonner";
 
 const Chat = () => {
-  const { currentUser } = useAuth();
-  const storedWorkspace = JSON.parse(localStorage.getItem("selectedWorkspace"));
+  const { currentUser, selectedWorkSpace: storedWorkspace } = useAuth();
   const selectedWorkSpaceId =
     storedWorkspace?.workspaceId || storedWorkspace?.id;
   const [value, setValue] = useState("");

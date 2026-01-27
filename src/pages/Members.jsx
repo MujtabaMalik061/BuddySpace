@@ -21,9 +21,8 @@ import { toast } from "sonner";
 import { generateCustomId, ProfileByName } from "../utils/Helper";
 
 const Members = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, selectedWorkSpace: storedWorkspace } = useAuth();
 
-  const storedWorkspace = JSON.parse(localStorage.getItem("selectedWorkspace"));
   const selectedWorkSpaceId =
     storedWorkspace?.workspaceId || storedWorkspace?.id;
 

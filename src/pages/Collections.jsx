@@ -29,11 +29,8 @@ import { useDebounce } from "../utils/hooks/useDebounce";
 
 const Collections = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
-  const selectedWorkspace = JSON.parse(
-    localStorage.getItem("selectedWorkspace"),
-  );
-  const workSpaceId = selectedWorkspace?.id;
+  const { currentUser, selectedWorkSpace } = useAuth();
+  const workSpaceId = selectedWorkSpace?.id;
   const [search, setSearch] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +62,7 @@ const Collections = () => {
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    if (!workSpaceId) return;
+    if (!workSpaceId) return setLoading(false);
 
     setItems([]);
     setLastDoc(null);
