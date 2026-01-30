@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { Selector } from "./CustomComponents";
 
 const WorkSpaceSettings = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, fetchWorkSpaces } = useAuth();
   const { workspaceId } = useParams();
   const navigate = useNavigate();
 
@@ -205,7 +205,13 @@ const WorkSpaceSettings = () => {
           <button
             disabled={loading !== ""}
             onClick={() =>
-              handleWorkSpaceUpdate(workspaceId, setLoading, name, description)
+              handleWorkSpaceUpdate(
+                workspaceId,
+                setLoading,
+                name,
+                description,
+                fetchWorkSpaces,
+              )
             }
             className="settings-primary-button mar-t-12-18"
           >
@@ -312,7 +318,9 @@ const WorkSpaceSettings = () => {
           </div>
 
           <button
-            onClick={() => handleDeleteWorkspace(workspaceId, navigate)}
+            onClick={() =>
+              handleDeleteWorkspace(workspaceId, navigate, fetchWorkSpaces)
+            }
             style={{ background: "var(--error)" }}
             className="settings-primary-button mar-t-12-18"
           >

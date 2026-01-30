@@ -8,7 +8,7 @@ import { handleCreateWorkSpace } from "../services/WorkSpaceHelper";
 import { toast } from "sonner";
 
 const CreateWorkSpace = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, fetchWorkSpaces } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +18,7 @@ const CreateWorkSpace = () => {
 
   const CreateWorkSpace = async () => {
     if (!name) return toast.error("Name is required!!");
-    if (!description) return toast.error("Name is required!!");
+    if (!description) return toast.error("Description is required!!");
     if (!currentUser) return toast.error("Your id not found");
     try {
       setLoading(true);
@@ -28,6 +28,7 @@ const CreateWorkSpace = () => {
         description,
         isPrivate
       );
+      fetchWorkSpaces();
       navigate("/workspaces");
       toast.success("WorkSpace created successfully.");
     } finally {

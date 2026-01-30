@@ -53,7 +53,9 @@
   border-radius: 16px;
   padding: 18px;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .workspaces-card:hover {
@@ -212,11 +214,13 @@
 .workspace-detail-title {
   font-size: 26px;
   font-weight: 700;
+  white-space: pre-line;
 }
 
 .workspace-detail-subtitle {
   color: var(--text-muted);
   margin-top: 4px;
+  white-space: pre-line;
 }
 
 .workspace-detail-actions {
@@ -320,7 +324,9 @@
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: var(--text-inverse);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, filter 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    filter 0.2s ease;
   width: 100%;
 }
 
@@ -539,7 +545,9 @@
   border-radius: 16px;
   padding: 30px;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .no-access-card > h2 {

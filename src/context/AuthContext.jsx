@@ -52,39 +52,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!currentUser) return;
-    const fetchWorkSpaces = async () => {
-      setWorkSpacesLoader(true)
-      try {
-        const data = await handleFtechWorkSpaces("private", currentUser.id);
-        setWorkSpaces(data || []);
-        if (!data || data.length === 0) {
-          setSelectedWorkSpace(null);
-          localStorage.removeItem("selectedWorkspace");
-          setCorrectWorkSpace(false);
-          return;
-        }
-
-        const stored = localStorage.getItem("selectedWorkspace");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          const exists = data.find((ws) => ws.id === parsed.id);
-          setSelectedWorkSpace(exists || data[0]);
-          if (exists) {
-            setCorrectWorkSpace(true);
-          } else {
-            setCorrectWorkSpace(false);
-          }
-        } else {
-          setSelectedWorkSpace(data[0]);
-          localStorage.setItem("selectedWorkspace", JSON.stringify(data[0]));
-        }
-      } catch (err) {
-        console.error("Workspace fetch error:", err);
-      }finally{
-        setWorkSpacesLoader(false);
-      }
-    };
-
     fetchWorkSpaces();
   }, [currentUser]);
 
@@ -100,6 +67,39 @@ export const AuthProvider = ({ children }) => {
       window.removeEventListener("offline", handleOffline);
     };
   }, []);
+
+  const fetchWorkSpaces = async () => {
+    setWorkSpacesLoader(true);
+    try {
+      const data = await handleFtechWorkSpaces("private", currentUser.id);
+      setWorkSpaces(data || []);
+      if (!data || data.length === 0) {
+        setSelectedWorkSpace(null);
+        localStorage.removeItem("selectedWorkspace");
+        setCorrectWorkSpace(false);
+        return;
+      }
+
+      const stored = localStorage.getItem("selectedWorkspace");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const exists = data.find((ws) => ws.id === parsed.id);
+        setSelectedWorkSpace(exists || data[0]);
+        if (exists) {
+          setCorrectWorkSpace(true);
+        } else {
+          setCorrectWorkSpace(false);
+        }
+      } else {
+        setSelectedWorkSpace(data[0]);
+        localStorage.setItem("selectedWorkspace", JSON.stringify(data[0]));
+      }
+    } catch (err) {
+      console.error("Workspace fetch error:", err);
+    } finally {
+      setWorkSpacesLoader(false);
+    }
+  };
 
   const changeWorkspace = (workspace) => {
     if (!workspace) return;
@@ -126,6 +126,7 @@ export const AuthProvider = ({ children }) => {
         correctWorkSpace,
         workSpacesLoader,
         changeWorkspace,
+        fetchWorkSpaces,
         logout,
         isOnline,
       }}

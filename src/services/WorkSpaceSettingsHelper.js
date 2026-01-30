@@ -17,7 +17,7 @@ export const fetchWorkspaceById = async (
   setName,
   setDescription,
   setIsPrivate,
-  setHasAccess
+  setHasAccess,
 ) => {
   try {
     const ref = doc(db, "WorkSpaces", workspaceId);
@@ -48,7 +48,8 @@ export const handleWorkSpaceUpdate = async (
   workspaceId,
   setLoading,
   name,
-  description
+  description,
+  fetchWorkSpaces,
 ) => {
   if (!workspaceId) return;
 
@@ -59,7 +60,7 @@ export const handleWorkSpaceUpdate = async (
       description,
       updatedAt: new Date(),
     });
-
+    fetchWorkSpaces();
     toast.success("Workspace updated successfully!");
   } catch (error) {
     console.error("Workspace update error:", error);
@@ -72,7 +73,7 @@ export const handleWorkSpaceUpdate = async (
 export const handleVisibilityUpdate = async (
   workspaceId,
   setLoading,
-  isPrivate
+  isPrivate,
 ) => {
   if (!workspaceId) return;
 
@@ -82,7 +83,6 @@ export const handleVisibilityUpdate = async (
       isPrivate,
       updatedAt: new Date(),
     });
-
     toast.success("Visibility updated!");
   } catch (error) {
     console.error("Visibility update error:", error);
@@ -92,17 +92,22 @@ export const handleVisibilityUpdate = async (
   }
 };
 
-export const handleDeleteWorkspace = async (workspaceId, navigate) => {
+export const handleDeleteWorkspace = async (
+  workspaceId,
+  navigate,
+  fetchWorkSpaces,
+) => {
   if (!workspaceId) return;
 
   const confirmDelete = window.confirm(
-    "Are you sure? This action cannot be undone."
+    "Are you sure? This action cannot be undone.",
   );
   if (!confirmDelete) return;
 
   try {
     await deleteDoc(doc(db, "WorkSpaces", workspaceId));
     toast.success("Workspace deleted!");
+    fetchWorkSpaces();
     navigate("/workspaces");
   } catch (error) {
     console.error("Delete error:", error);
@@ -141,7 +146,7 @@ export const getWorkSpaceDetailsById = async (currentUser, workspaceId) => {
 export const addCommentToWorkSpace = async (
   workspaceId,
   currentUser,
-  comment
+  comment,
 ) => {
   if (!workspaceId || !currentUser || !comment.trim()) return;
 
@@ -175,7 +180,7 @@ export const getUsersMapByIds = async (userIds = []) => {
       if (snap.exists()) {
         usersMap[id] = snap.data().fullName;
       }
-    })
+    }),
   );
 
   return usersMap;
@@ -185,7 +190,7 @@ export const listenWorkSpaceDetailsById = (
   workspaceId,
   currentUser,
   setWorkSpaceDetails,
-  setHasAccess
+  setHasAccess,
 ) => {
   if (!workspaceId || !currentUser) return;
 
@@ -237,7 +242,7 @@ export const listenWorkSpaceDetailsById = (
     (error) => {
       console.error("Realtime workspace fetch error:", error);
       setHasAccess(false);
-    }
+    },
   );
 
   return unsubscribe;

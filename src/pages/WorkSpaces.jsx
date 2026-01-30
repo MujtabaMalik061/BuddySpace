@@ -101,6 +101,11 @@ const WorkSpaces = () => {
     }
   };
 
+  const sortedWorkspaces = workspaces.sort((a, b) => {
+    return b.createdAt.seconds - a.createdAt.seconds;
+  });
+  
+
   return (
     <>
       <TopBar title="Workspaces" />
@@ -140,9 +145,9 @@ const WorkSpaces = () => {
             <Loader size="60" style={{ height: "70vh", width: "100%" }} />
           </div>
         ) : tab === "invites" ? (
-          workspaces?.length > 0 ? (
+          sortedWorkspaces?.length > 0 ? (
             <div className="workspaces-grid">
-              {workspaces.map((workspace) => (
+              {sortedWorkspaces.map((workspace) => (
                 <div key={workspace.id} className="workspaces-card padd-12-24">
                   <div className="workspaces-card-header">
                     <div>

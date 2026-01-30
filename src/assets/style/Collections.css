@@ -129,6 +129,10 @@
 .collection-card-title {
   font-weight: 600;
   margin-bottom: 6px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .collection-card-desc {
@@ -393,11 +397,13 @@
 .collection-details-title {
   font-size: 22px;
   font-weight: 700;
+    white-space: pre-line;
 }
 
 .collection-details-description {
   color: var(--text-muted);
   margin: 6px 0px 16px;
+  white-space: pre-line;
 }
 
 .collection-details-createdby {
