@@ -6,6 +6,10 @@ import {
   arrayUnion,
   Timestamp,
   onSnapshot,
+  getDocs,
+  collection,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import { toast } from "sonner";
@@ -105,8 +109,29 @@ export const handleDeleteWorkspace = async (
   if (!confirmDelete) return;
 
   try {
+    const messagesRef = collection(db, "Chats", workspaceId, "messages");
+    const messagesSnap = await getDocs(messagesRef);
+
+    await Promise.all(
+      messagesSnap.docs.map((docSnap) => deleteDoc(docSnap.ref)),
+    );
+
+    await deleteDoc(doc(db, "Chats", workspaceId));
+
+    const collectionsRef = collection(db, "Collections");
+    const q = query(collectionsRef, where("workSpaceId", "==", workspaceId));
+    const querySnapshot = await getDocs(q);
+
+    const deletePromises = [];
+    querySnapshot.forEach((docSnap) => {
+      deletePromises.push(deleteDoc(doc(db, "Collections", docSnap.id)));
+    });
+
+    await Promise.all(deletePromises);
+
     await deleteDoc(doc(db, "WorkSpaces", workspaceId));
-    toast.success("Workspace deleted!");
+
+    toast.success("Workspace and all related data deleted!");
     fetchWorkSpaces();
     navigate("/workspaces");
   } catch (error) {
