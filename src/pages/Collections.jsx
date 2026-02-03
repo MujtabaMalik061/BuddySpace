@@ -320,19 +320,17 @@ const Collections = () => {
                 );
               })}
             </div>
-            <div className="load-more-container">
-              {items?.length > 0 && (
-                <div className="load-more-container">
-                  {loadMoreLoading ? (
-                    <Loader style={{ height: "150px", width: "100%" }} />
-                  ) : !lastIndex ? (
-                    <button onClick={handleLoadMore} className="load-more-btn">
-                      Load More
-                    </button>
-                  ) : null}
-                </div>
-              )}
-            </div>
+            {(loadMoreLoading || !lastIndex) && items?.length > 0 && (
+              <div className="load-more-container">
+                {loadMoreLoading ? (
+                  <Loader style={{ height: "150px", width: "100%" }} />
+                ) : !lastIndex ? (
+                  <button onClick={handleLoadMore} className="load-more-btn">
+                    Load More
+                  </button>
+                ) : null}
+              </div>
+            )}
           </>
         ) : (
           <div className="no-data">No any collection found.</div>
