@@ -55,7 +55,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: var(--primary);
+  background-color: var(--bg-main);
   border: 1px solid var(--border-default);
   display: flex;
   align-items: center;

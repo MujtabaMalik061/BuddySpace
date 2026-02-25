@@ -16,9 +16,10 @@ import { auth, db } from "../utils/FirebaseConfig";
 import { toast } from "sonner";
 import { ProfileByName } from "../utils/Helper";
 import TopBar from "../components/TopBar";
+import { Selector } from "../components/CustomComponents";
 
 const Settings = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, setImageMode, imageMode } = useTheme();
   const { currentUser, loading } = useAuth();
   const [loadingType, setLoadingType] = useState("");
 
@@ -55,7 +56,7 @@ const Settings = () => {
           {
             method: "POST",
             body: formData,
-          }
+          },
         );
 
         const data = await res.json();
@@ -67,7 +68,7 @@ const Settings = () => {
 
       const q = query(
         collection(db, "Users"),
-        where("authId", "==", currentUser.uid)
+        where("authId", "==", currentUser.uid),
       );
       const snap = await getDocs(q);
 
@@ -116,7 +117,7 @@ const Settings = () => {
 
       const credential = EmailAuthProvider.credential(
         user.email,
-        currentPassword
+        currentPassword,
       );
 
       await reauthenticateWithCredential(user, credential);
@@ -169,9 +170,17 @@ const Settings = () => {
               {loading ? (
                 <Loader color="#fff" size="18" />
               ) : avatarPreview ? (
-                <img src={avatarPreview} alt="Avatar Preview" />
+                <img
+                  src={avatarPreview}
+                  style={{ objectFit: imageMode }}
+                  alt="Avatar Preview"
+                />
               ) : currentUser?.profileImage ? (
-                <img src={currentUser?.profileImage} alt="Avatar" />
+                <img
+                  src={currentUser?.profileImage}
+                  style={{ objectFit: imageMode }}
+                  alt="Avatar"
+                />
               ) : (
                 ProfileByName(currentUser?.fullName)
               )}
@@ -334,7 +343,19 @@ const Settings = () => {
               </p>
             </div>
           </div>
-
+          <div
+            className="settings-transfer-owner-field mar-b-14-20"
+            style={{ marginBottom: "20px" }}
+          >
+            <Selector
+              filter={imageMode}
+              setFilter={setImageMode}
+              options={[
+                { label: "Cover", filter: "cover" },
+                { label: "Contain", filter: "contain" },
+              ]}
+            />
+          </div>
           <div className="settings-toggle-row">
             <div>
               <span className="settings-toggle-title font-14-18">

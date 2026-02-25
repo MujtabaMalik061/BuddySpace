@@ -11,7 +11,16 @@ export const ThemeProvider = ({ children }) => {
     return "light";
   };
 
+  const getInitialImageMode = () => {
+    const savedImageMode = localStorage.getItem("ImageMode");
+    if (savedImageMode) {
+      return savedImageMode;
+    }
+    return "cover";
+  };
+
   const [theme, setTheme] = useState(getInitialTheme);
+  const [imageMode, setImageMode] = useState(getInitialImageMode);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -24,6 +33,10 @@ export const ThemeProvider = ({ children }) => {
 
     localStorage.setItem("themeMode", theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("ImageMode", imageMode);
+  }, [imageMode]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -39,6 +52,8 @@ export const ThemeProvider = ({ children }) => {
         toggleTheme,
         setLight,
         setDark,
+        setImageMode,
+        imageMode,
       }}
     >
       {children}

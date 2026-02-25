@@ -11,14 +11,15 @@ import { addCommentToCollection } from "../services/CollectionsHelper";
 import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
 import { IMAGES } from "../services/Constants";
 import { getUserNameById } from "../utils/Helper";
+import { useTheme } from "../context/ThemeContext";
 
 const CollectionDetails = () => {
+    const { setImageMode, imageMode } = useTheme();
   const { collectionId } = useParams();
   const { currentUser } = useAuth();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
-  const [imagePosition, setImagePosition] = useState("cover");
 
   useEffect(() => {
     if (!collectionId) return;
@@ -107,9 +108,9 @@ const CollectionDetails = () => {
           <div className="collection-details-image-container">
             <div className="collection-details-image-fit-container">
               <span
-                onClick={() => setImagePosition("cover")}
+                onClick={() => setImageMode("cover")}
                 className={
-                  imagePosition === "cover"
+                  imageMode === "cover"
                     ? "collection-details-image-fit-active icon "
                     : "icon"
                 }
@@ -117,9 +118,9 @@ const CollectionDetails = () => {
                 <Expand size={18} />
               </span>
               <span
-                onClick={() => setImagePosition("contain")}
+                onClick={() => setImageMode("contain")}
                 className={
-                  imagePosition === "contain"
+                  imageMode === "contain"
                     ? "collection-details-image-fit-active icon "
                     : "icon"
                 }
@@ -128,7 +129,7 @@ const CollectionDetails = () => {
               </span>
             </div>
             <img
-              style={{ objectFit: imagePosition }}
+              style={{ objectFit: imageMode }}
               src={item.thumbnail || IMAGES.FallBackImage}
               alt={item.title}
               className="collection-details-image"

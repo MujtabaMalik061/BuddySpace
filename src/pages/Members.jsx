@@ -19,8 +19,10 @@ import {
 } from "firebase/firestore";
 import { toast } from "sonner";
 import { generateCustomId, ProfileByName } from "../utils/Helper";
+import { useTheme } from "../context/ThemeContext";
 
 const Members = () => {
+  const { imageMode } = useTheme();
   const { currentUser, selectedWorkSpace: storedWorkspace } = useAuth();
 
   const selectedWorkSpaceId =
@@ -56,7 +58,7 @@ const Members = () => {
           if (!userSnap.exists()) return null;
 
           const data = userSnap.data();
-          
+
           return {
             id: userId,
             profileImage: data.profileImage,
@@ -65,7 +67,7 @@ const Members = () => {
             role: userId === wsData.createdBy ? "Admin" : "Member",
             joinedAt: data.createdAt?.toDate().toLocaleDateString() || "-",
           };
-        })
+        }),
       );
 
       setMembers(membersData);
@@ -150,16 +152,15 @@ const Members = () => {
       setInviteLoading(false);
     }
   };
-  
-const filteredMembers = members.filter((member) => {
-  const query = search.toLowerCase();
 
-  return (
-    member?.name?.toLowerCase().includes(query) ||
-    member?.email?.toLowerCase().includes(query)
-  );
-});
+  const filteredMembers = members.filter((member) => {
+    const query = search.toLowerCase();
 
+    return (
+      member?.name?.toLowerCase().includes(query) ||
+      member?.email?.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <>
@@ -206,7 +207,11 @@ const filteredMembers = members.filter((member) => {
                   <div className="members-user">
                     <div className="members-avatar">
                       {member?.profileImage ? (
-                        <img src={member?.profileImage} alt="Avatar" />
+                        <img
+                          src={member?.profileImage}
+                          alt="Avatar"
+                          style={{ objectFit: imageMode }}
+                        />
                       ) : (
                         ProfileByName(member?.name || "N/A")
                       )}

@@ -26,9 +26,11 @@ import { toast } from "sonner";
 import { IMAGES } from "../services/Constants";
 import { SearchInput } from "../components/CustomComponents";
 import { useDebounce } from "../utils/hooks/useDebounce";
+import { useTheme } from "../context/ThemeContext";
 
 const Collections = () => {
   const navigate = useNavigate();
+  const { imageMode } = useTheme();
   const { currentUser, selectedWorkSpace } = useAuth();
   const workSpaceId = selectedWorkSpace?.id;
   const [search, setSearch] = useState("");
@@ -288,6 +290,7 @@ const Collections = () => {
                   >
                     <div className="collection-thumb">
                       <img
+                        style={{ objectFit: imageMode }}
                         src={item.thumbnail || IMAGES.FallBackImage}
                         alt={item.title}
                       />
