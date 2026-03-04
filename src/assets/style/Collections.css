@@ -310,6 +310,7 @@
 .collection-btn-secondary {
   cursor: pointer;
   background: var(--bg-muted);
+  color: var(--text-primary);
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
@@ -403,7 +404,7 @@
 .collection-details-description {
   color: var(--text-muted);
   margin: 6px 0px 16px;
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
 .collection-details-createdby {
