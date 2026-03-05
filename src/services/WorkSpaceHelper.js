@@ -18,7 +18,8 @@ export const handleCreateWorkSpace = async (
   userId,
   name,
   description,
-  isPrivate
+  isPrivate,
+  isDevMode,
 ) => {
   try {
     const customId = await generateCustomId("WorkSpaces");
@@ -29,6 +30,7 @@ export const handleCreateWorkSpace = async (
       name,
       description,
       isPrivate: !!isPrivate,
+      isDevMode: !!isDevMode,
       createdAt: serverTimestamp(),
       members: [userId],
     };

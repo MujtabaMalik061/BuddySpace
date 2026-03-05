@@ -31,7 +31,14 @@ export const SidebarMenuItems = [
     icon: "Library",
     route: "/collections",
     activeAt: "/collections",
-    startsWith: ["/collection"],
+    startsWith: ["/collection/"],
+  },
+  {
+    name: "CoreBlocks",
+    icon: "Codesandbox",
+    route: "/coreblocks",
+    activeAt: "/coreblocks",
+    startsWith: ["/coreblock/"],
   },
   {
     name: "Members",
@@ -47,5 +54,16 @@ export const SidebarMenuItems = [
     startsWith: ["/settings"],
   },
 ];
+
+export const detectLanguage = (code) => {
+  if (/^\s*</.test(code)) return "html";
+  if (/^\s*import .* from /.test(code) || /console\.log/.test(code))
+    return "javascript";
+  if (/^\s*def /.test(code)) return "python";
+  if (/^\s*#include /.test(code)) return "cpp";
+  if (/^\s*function /.test(code)) return "typescript";
+  if (/^\s*[\.\#][\w\-]+\s*\{/.test(code)) return "css";
+  return "plaintext";
+};
 
 export const limit = 20;

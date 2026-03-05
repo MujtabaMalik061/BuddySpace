@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Library,
   Settings,
+  Codesandbox,
 } from "lucide-react";
 import "../assets/style/SideBar.css";
 import { IMAGES, SidebarMenuItems } from "../services/Constants";
@@ -17,7 +18,7 @@ import LogoutModel from "../auth/LogoutModel";
 import { useAuth } from "../context/AuthContext";
 
 const SideBar = () => {
-  const { logout } = useAuth();
+  const { selectedWorkSpace, correctWorkSpace } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSideBar, setIsSideBar] = useState(false);
@@ -33,6 +34,8 @@ const SideBar = () => {
         return <MessageCircle className="sidebar-icon" />;
       case "Library":
         return <Library className="sidebar-icon" />;
+      case "Codesandbox":
+        return <Codesandbox className="sidebar-icon" />;
       case "Users":
         return <Users className="sidebar-icon" />;
       case "Settings":
@@ -41,6 +44,15 @@ const SideBar = () => {
         return null;
     }
   };
+
+  const isDevMode = (correctWorkSpace && selectedWorkSpace?.isDevMode )|| false;
+
+  const filteredSidebarItems = SidebarMenuItems.filter((item) => {
+    if (item.name === "CoreBlocks") {
+      return isDevMode;
+    }
+    return true;
+  });
 
   return (
     <>
@@ -89,13 +101,13 @@ const SideBar = () => {
         <div className="sidebar-divider" />
 
         <nav className="sidebar-menu">
-          {SidebarMenuItems.map((item, index) => {
+          {filteredSidebarItems.map((item, index) => {
             const isActive = (item) => {
               if (location.pathname === item.activeAt) return true;
               if (!item.startsWith) return false;
 
               return item.startsWith.some((path) =>
-                location.pathname.startsWith(path)
+                location.pathname.startsWith(path),
               );
             };
 

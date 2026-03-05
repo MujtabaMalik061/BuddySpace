@@ -16,6 +16,8 @@ import Members from "./pages/Members.jsx";
 import Settings from "./pages/Settings.jsx";
 import WorkSpaceSettings from "./components/WorkSpaceSettings.jsx";
 import CreateWorkSpace from "./components/CreateWorkSpace.jsx";
+import Coreblocks from "./pages/Coreblocks.jsx";
+import CoreBlockDetails from "./components/CoreBlockDetails.jsx";
 
 const App = () => {
   return (
@@ -39,6 +41,11 @@ const App = () => {
           <Route
             path="/collection/:collectionId"
             element={<CollectionDetails />}
+          />
+          <Route path="/coreblocks" element={<Coreblocks />} />
+          <Route
+            path="/coreblock/:coreblockId"
+            element={<CoreBlockDetails />}
           />
           <Route path="/members" element={<Members />} />
           <Route path="/settings" element={<Settings />} />

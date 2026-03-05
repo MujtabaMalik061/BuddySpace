@@ -15,6 +15,7 @@ const CreateWorkSpace = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [isDevMode, setIsDevMode] = useState(false);
 
   const CreateWorkSpace = async () => {
     if (!name) return toast.error("Name is required!!");
@@ -26,7 +27,8 @@ const CreateWorkSpace = () => {
         currentUser?.id,
         name,
         description,
-        isPrivate
+        isPrivate,
+        isDevMode,
       );
       fetchWorkSpaces();
       navigate("/workspaces");
@@ -103,6 +105,24 @@ const CreateWorkSpace = () => {
                 type="checkbox"
                 checked={isPrivate}
                 onChange={() => setIsPrivate(!isPrivate)}
+              />
+            </div>
+            <div
+              style={{ marginTop: "18px" }}
+              className="settings-toggle-row mar-t-12-18"
+            >
+              <div>
+                <span className="settings-toggle-title font-14-18">
+                  Development Mode
+                </span>
+                <p className="settings-toggle-description font-12-16">
+                  Enable extra features for development and testing
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={isDevMode}
+                onChange={() => setIsDevMode(!isDevMode)}
               />
             </div>
           </section>

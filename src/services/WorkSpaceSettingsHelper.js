@@ -21,6 +21,7 @@ export const fetchWorkspaceById = async (
   setName,
   setDescription,
   setIsPrivate,
+  setIsDevMode,
   setHasAccess,
 ) => {
   try {
@@ -42,6 +43,7 @@ export const fetchWorkspaceById = async (
     setName(data.name || "");
     setDescription(data.description || "");
     setIsPrivate(!!data.isPrivate);
+    setIsDevMode(!!data.isDevMode);
   } catch (err) {
     console.error("Fetch workspace error:", err);
     setHasAccess(false);
@@ -78,6 +80,7 @@ export const handleVisibilityUpdate = async (
   workspaceId,
   setLoading,
   isPrivate,
+  isDevMode,
 ) => {
   if (!workspaceId) return;
 
@@ -85,6 +88,7 @@ export const handleVisibilityUpdate = async (
   try {
     await updateDoc(doc(db, "WorkSpaces", workspaceId), {
       isPrivate,
+      isDevMode,
       updatedAt: new Date(),
     });
     toast.success("Visibility updated!");

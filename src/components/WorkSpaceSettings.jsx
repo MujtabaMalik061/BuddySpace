@@ -37,6 +37,7 @@ const WorkSpaceSettings = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [isDevMode, setIsDevMode] = useState(false);
   const [workSpaceOwner, setWorkSpaceOwner] = useState(null);
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const WorkSpaceSettings = () => {
         setName,
         setDescription,
         setIsPrivate,
+        setIsDevMode,
         setHasAccess,
       );
     } finally {
@@ -249,11 +251,34 @@ const WorkSpaceSettings = () => {
               onChange={() => setIsPrivate(!isPrivate)}
             />
           </div>
+          <div
+            style={{ marginTop: "18px" }}
+            className="settings-toggle-row mar-t-12-18"
+          >
+            <div>
+              <span className="settings-toggle-title font-14-18">
+                Development Mode
+              </span>
+              <p className="settings-toggle-description font-12-16">
+                Enable extra features for development and testing
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={isDevMode}
+              onChange={() => setIsDevMode(!isDevMode)}
+            />
+          </div>
 
           <button
             disabled={loading !== ""}
             onClick={() =>
-              handleVisibilityUpdate(workspaceId, setLoading, isPrivate)
+              handleVisibilityUpdate(
+                workspaceId,
+                setLoading,
+                isPrivate,
+                isDevMode,
+              )
             }
             className="settings-secondary-button mar-t-12-18"
           >

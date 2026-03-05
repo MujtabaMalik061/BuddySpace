@@ -398,7 +398,7 @@
 .collection-details-title {
   font-size: 22px;
   font-weight: 700;
-    white-space: pre-line;
+  white-space: pre-line;
 }
 
 .collection-details-description {
@@ -526,4 +526,10 @@
   gap: 6px;
   align-items: center;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .collection-details-image-container {
+    min-height: auto;
+  }
 }
