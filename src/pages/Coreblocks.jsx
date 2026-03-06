@@ -562,7 +562,7 @@ const CustomInput = ({ content, setContent }) => {
           />
           <Editor
             height="200px"
-            defaultLanguage={detectLanguage(value)}
+            defaultLanguage="javascript"
             value={value}
             theme={theme === "dark" ? "vs-dark" : "vs"}
             onChange={(val) => setValue(val)}
