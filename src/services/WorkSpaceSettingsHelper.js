@@ -111,7 +111,6 @@ export const handleDeleteWorkspace = async (
     "Are you sure? This action cannot be undone.",
   );
   if (!confirmDelete) return;
-
   try {
     const messagesRef = collection(db, "Chats", workspaceId, "messages");
     const messagesSnap = await getDocs(messagesRef);
@@ -132,6 +131,21 @@ export const handleDeleteWorkspace = async (
     });
 
     await Promise.all(deletePromises);
+
+    const coreBlocksRef = collection(db, "CoreBlocks");
+    const coreBlocksq = query(
+      coreBlocksRef,
+      where("workSpaceId", "==", workspaceId),
+    );
+    const coreBlocksquerySnapshot = await getDocs(coreBlocksq);
+    const coreBlocksdeletePromises = [];
+    coreBlocksquerySnapshot.forEach((docSnap) => {
+      coreBlocksdeletePromises.push(
+        deleteDoc(doc(db, "CoreBlocks", docSnap.id)),
+      );
+    });
+
+    await Promise.all(coreBlocksdeletePromises);
 
     await deleteDoc(doc(db, "WorkSpaces", workspaceId));
 

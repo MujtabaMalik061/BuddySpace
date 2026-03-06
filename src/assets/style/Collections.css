@@ -355,6 +355,7 @@
   position: relative;
   min-height: 320px;
   width: 100%;
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .collection-details-image-fit-container {

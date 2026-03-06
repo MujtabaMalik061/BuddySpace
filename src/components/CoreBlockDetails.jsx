@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Code2, Copy, Expand, Shrink, User } from "lucide-react";
 import TopBar from "./TopBar";
 import { BackBtn, CommentsArea } from "./CustomComponents";
@@ -16,12 +16,20 @@ import { Editor } from "@monaco-editor/react";
 import { toast } from "sonner";
 
 const CoreBlockDetails = () => {
+  const navigate = useNavigate();
   const { setImageMode, imageMode, theme } = useTheme();
   const { coreblockId } = useParams();
-  const { currentUser } = useAuth();
+  const { currentUser, selectedWorkSpace, workSpacesLoader } = useAuth();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
+
+  useEffect(() => {
+    if (!workSpacesLoader && !selectedWorkSpace?.isDevMode) {
+      toast.error("This route is allowed only in development mode.");
+      navigate("/workspaces", { replace: true });
+    }
+  }, [selectedWorkSpace, navigate]);
 
   useEffect(() => {
     if (!coreblockId) return;
@@ -69,7 +77,7 @@ const CoreBlockDetails = () => {
     return () => unsub();
   }, [coreblockId]);
 
-  if (loading) {
+  if (loading || workSpacesLoader) {
     return (
       <>
         <TopBar title="CoreBock Details" />
