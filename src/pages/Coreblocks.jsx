@@ -34,6 +34,7 @@ const Coreblocks = () => {
   const fileInputRef = useRef(null);
   const [localImageFile, setLocalImageFile] = useState(null);
   const [thumbnailLink, setThumbnailLink] = useState("");
+  const [selectedBlock, setSelectedBlock] = useState(null);
 
   // pagination
   const [lastDoc, setLastDoc] = useState(null);
@@ -443,11 +444,21 @@ const Coreblocks = () => {
                 Upload locally
               </label>
             )}
-            <CustomInput content={content} setContent={setContent} />
+            {/* <CustomInput content={content} setContent={setContent} /> */}
+            <CustomInput
+              content={content}
+              setContent={setContent}
+              selectedBlock={selectedBlock}
+              setSelectedBlock={setSelectedBlock}
+            />
             {content?.length > 0 && (
               <div className="coreblock-selected-content-container">
                 {content?.map((item) => (
-                  <div className="coreblock-selected-content" key={item.index}>
+                  <div
+                    className="coreblock-selected-content"
+                    onClick={() => setSelectedBlock(item)}
+                    key={item.index}
+                  >
                     <p className="coreblock-selected-content-value elepsis">
                       {item.value}
                     </p>
@@ -496,21 +507,59 @@ const Coreblocks = () => {
 
 export default Coreblocks;
 
-const CustomInput = ({ content, setContent }) => {
+const CustomInput = ({
+  content,
+  setContent,
+  selectedBlock,
+  setSelectedBlock,
+}) => {
   const { theme } = useTheme();
   const [value, setValue] = useState("");
   const [label, setLabel] = useState("");
   const [tag, setTage] = useState("h2");
 
   useEffect(() => {
-    setValue("");
-    setLabel("");
+    if (!selectedBlock) {
+      setValue("");
+      setLabel("");
+    }
   }, [tag]);
+
+  useEffect(() => {
+    if (selectedBlock) {
+      setValue(selectedBlock.value);
+      setLabel(selectedBlock.label || "");
+      setTage(selectedBlock.tag);
+    }
+  }, [selectedBlock]);
+
+  // const handleAdd = () => {
+  //   if (tag === "c") {
+  //     if (!label.trim() || !value.trim()) {
+  //       toast.error("Both Label and Value are required for Code block.");
+  //       return;
+  //     }
+  //   } else {
+  //     if (!value.trim()) {
+  //       toast.error("Value is required.");
+  //       return;
+  //     }
+  //   }
+  //   const nextIndex =
+  //     content.length > 0 ? content[content.length - 1].index + 1 : 0;
+
+  //   const newBlock = { index: nextIndex, tag, label, value };
+
+  //   setContent([...content, newBlock]);
+
+  //   setValue("");
+  //   setLabel("");
+  // };
 
   const handleAdd = () => {
     if (tag === "c") {
       if (!label.trim() || !value.trim()) {
-        toast.error("Both Label and Value are required for Code block.");
+        toast.error("Both Label and Value are required.");
         return;
       }
     } else {
@@ -519,13 +568,28 @@ const CustomInput = ({ content, setContent }) => {
         return;
       }
     }
-    const nextIndex =
-      content.length > 0 ? content[content.length - 1].index + 1 : 0;
 
-    const newBlock = { index: nextIndex, tag, label, value };
+    if (selectedBlock) {
+      // ✏️ EDIT MODE
+      const updated = content.map((item) =>
+        item.index === selectedBlock.index
+          ? { ...item, value, label, tag }
+          : item,
+      );
 
-    setContent([...content, newBlock]);
+      setContent(updated);
+      setSelectedBlock(null); // exit edit mode
+    } else {
+      // ➕ ADD MODE
+      const nextIndex =
+        content.length > 0 ? content[content.length - 1].index + 1 : 0;
 
+      const newBlock = { index: nextIndex, tag, label, value };
+
+      setContent([...content, newBlock]);
+    }
+
+    // reset input
     setValue("");
     setLabel("");
   };
@@ -586,7 +650,7 @@ const CustomInput = ({ content, setContent }) => {
         />
       )}
 
-      <button
+      {/* <button
         style={{ width: "100%", marginTop: "3px", justifyContent: "center" }}
         className="collection-add-btn"
         onClick={handleAdd}
@@ -595,7 +659,52 @@ const CustomInput = ({ content, setContent }) => {
           <Plus size={16} />
         </span>
         Add Block
-      </button>
+      </button> */}
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "7px",
+          marginTop: "3px",
+          width: "100%",
+        }}
+      >
+        {selectedBlock && (
+          <button
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "10px 14px",
+            }}
+            className="collection-btn-secondary"
+            onClick={() => {
+              setSelectedBlock(null);
+              setValue("");
+              setLabel("");
+            }}
+          >
+            <span className="icon">
+              <X size={16} />
+            </span>
+            Cancel Edit
+          </button>
+        )}
+        <button
+          style={{ width: "100%", justifyContent: "center" }}
+          className="collection-add-btn"
+          onClick={handleAdd}
+        >
+          <span className="icon">
+            <Plus size={16} />
+          </span>
+          {selectedBlock ? "Update Block" : "Add Block"}
+        </button>
+      </div>
     </div>
   );
 };

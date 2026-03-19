@@ -53,6 +53,7 @@
   border: 2px solid var(--primary);
   padding: 5px;
   border-radius: 15px;
+  cursor: pointer;
 }
 
 .coreblock-selected-content-value {
@@ -95,9 +96,10 @@
 
 .coreblock-details-subheading {
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   white-space: pre-line;
   color: var(--text-muted);
+  margin-top: 4px;
 }
 
 .coreblock-details-code-section {
