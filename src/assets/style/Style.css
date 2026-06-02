@@ -129,6 +129,7 @@ body {
 
 .icon {
   font-size: 0px;
+  transition: 0.3s;
 }
 
 /* ------  Modal ------ */

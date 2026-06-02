@@ -17,7 +17,7 @@
   object-fit: contain;
 }
 
-.mobile-topbar-container > button {
+.mobile-topbar-menu-btn {
   font-size: 0px;
   border: none;
   background: transparent;

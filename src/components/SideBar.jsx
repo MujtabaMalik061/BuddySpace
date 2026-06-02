@@ -10,6 +10,7 @@ import {
   Library,
   Settings,
   Codesandbox,
+  RefreshCcw,
 } from "lucide-react";
 import "../assets/style/SideBar.css";
 import { IMAGES, SidebarMenuItems } from "../services/Constants";
@@ -45,7 +46,7 @@ const SideBar = () => {
     }
   };
 
-  const isDevMode = (correctWorkSpace && selectedWorkSpace?.isDevMode )|| false;
+  const isDevMode = (correctWorkSpace && selectedWorkSpace?.isDevMode) || false;
 
   const filteredSidebarItems = SidebarMenuItems.filter((item) => {
     if (item.name === "CoreBlocks") {
@@ -65,13 +66,25 @@ const SideBar = () => {
           alt="TaskHive Logo"
           className="sidebar-logo"
         />
-        <button
-          onClick={() => {
-            setIsSideBar(!isSideBar);
-          }}
-        >
-          <Menu />
-        </button>
+        <div className="topbar-action-container">
+          <button
+            onClick={() => window.location.reload()}
+            className="refresh-btn show-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+          >
+            <span className="icon">
+              <RefreshCcw size={16} className="icon-12-16" />
+            </span>
+            Refresh
+          </button>
+          <button
+            onClick={() => {
+              setIsSideBar(!isSideBar);
+            }}
+            className="mobile-topbar-menu-btn"
+          >
+            <Menu />
+          </button>
+        </div>
       </div>
       <aside
         className={`sidebar-container ${!isSideBar ? "sidebar-closed" : ""}`}

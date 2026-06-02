@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Loader from "../components/Loader";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { Tabs } from "../components/CustomComponents";
 import {
@@ -25,7 +25,11 @@ const WorkSpaces = () => {
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [joinLoading, setJoinLoading] = useState(null);
-  const [tab, setTab] = useState("private");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") || "private";
+  const setTab = (newTab) => {
+    setSearchParams({ tab: newTab });
+  };
   const [workspaces, setWorkSpaces] = useState([]);
   const [declineLoading, setDeclineLoading] = useState(null);
   const [acceptLoading, setAcceptLoading] = useState(null);

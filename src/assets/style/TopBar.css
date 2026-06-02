@@ -7,3 +7,50 @@
   background-color: var(--bg-surface);
   border-bottom: 1px solid #e4e7ec;
 }
+
+.topbar-action-container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 6px;
+}
+
+ .show-mobile-400 {
+  display: none !important;
+ }
+
+.refresh-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--text-inverse);
+  padding: 6px 14px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--primary-hover),
+    var(--secondary-hover)
+  );
+}
+
+.refresh-btn:hover .icon {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 400px) {
+  .hide-mobile-400 {
+    display: none !important;
+  }
+  .show-mobile-400 {
+    display: inline-flex !important;
+  }
+}
