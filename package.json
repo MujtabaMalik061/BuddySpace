@@ -12,6 +12,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "date-fns": "^4.1.0",
+    "dev-push-notification": "^1.0.7",
     "esbuild": "^0.21.5",
     "firebase": "^12.7.0",
     "ldrs": "^1.1.9",

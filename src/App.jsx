@@ -18,8 +18,28 @@ import WorkSpaceSettings from "./components/WorkSpaceSettings.jsx";
 import CreateWorkSpace from "./components/CreateWorkSpace.jsx";
 import Coreblocks from "./pages/Coreblocks.jsx";
 import CoreBlockDetails from "./components/CoreBlockDetails.jsx";
+import { onMessageListener, initMessaging } from "dev-push-notification";
+import { Push_Notification_Api } from "./services/Constants.js";
+import TestingPage from "./pages/TestingPage.jsx";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    initMessaging(Push_Notification_Api);
+    const unsubscribe = onMessageListener(async (payload) => {
+      const { title, body, image } = payload.notification;
+      const link = payload.data?.clickUrl || "/";
+      const registration = await navigator.serviceWorker.ready;
+      registration.showNotification(title, {
+        body,
+        icon: image,
+        data: { clickUrl: link },
+      });
+    }, Push_Notification_Api);
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
@@ -55,6 +75,7 @@ const App = () => {
           />
         </Route>
       </Route>
+      <Route path="/testing" element={<TestingPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

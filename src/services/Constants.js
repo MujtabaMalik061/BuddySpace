@@ -67,3 +67,5 @@ export const detectLanguage = (code) => {
 };
 
 export const limit = 20;
+
+export const Push_Notification_Api = import.meta.env.VITE_Push_Notification;

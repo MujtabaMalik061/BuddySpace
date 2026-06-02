@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Camera, Eye, EyeOff, Lock, Palette, Trash2 } from "lucide-react";
+import { Bell, Camera, Eye, EyeOff, Lock, Palette, Trash2 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import "../assets/style/Settings.css";
@@ -35,9 +35,19 @@ const Settings = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isConfirmPassword, setIsConfirmPassword] = useState(false);
 
+  const [activityNotification, setActivityNotification] = useState("off");
+  const [chatNotifications, setChatNotifications] = useState(false);
+  const [commentNotifications, setCommentNotifications] = useState(false);
+
   useEffect(() => {
     if (currentUser) {
-      setName(currentUser.fullName);
+      setName(currentUser.fullName || "");
+
+      setActivityNotification(currentUser.activityNotification || "off");
+
+      setChatNotifications(currentUser.chatNotifications || false);
+
+      setCommentNotifications(currentUser.commentNotifications || false);
     }
   }, [currentUser]);
 
@@ -87,8 +97,6 @@ const Settings = () => {
       });
 
       toast.success("Profile updated successfully!");
-      // setAvatarFile(null);
-      // setAvatarPreview("");
     } catch (error) {
       console.error("Profile update error:", error);
       toast.error("Failed to update profile.");
@@ -138,6 +146,42 @@ const Settings = () => {
       } else {
         toast.error("Failed to update password.");
       }
+    } finally {
+      setLoadingType("");
+    }
+  };
+
+  const handlePushUpdate = async () => {
+    if (!currentUser) return;
+
+    setLoadingType("UpdatePush");
+
+    try {
+      const q = query(
+        collection(db, "Users"),
+        where("authId", "==", currentUser.uid),
+      );
+
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        toast.error("User profile not found.");
+        return;
+      }
+
+      const userDocRef = snap.docs[0].ref;
+
+      await updateDoc(userDocRef, {
+        activityNotification,
+        chatNotifications,
+        commentNotifications,
+        updatedAt: new Date(),
+      });
+
+      toast.success("Notification settings updated successfully!");
+    } catch (error) {
+      console.error("Notification settings update error:", error);
+      toast.error("Failed to update notification settings.");
     } finally {
       setLoadingType("");
     }
@@ -335,6 +379,88 @@ const Settings = () => {
 
         <section className="settings-section padd-12-24">
           <div className="settings-section-header">
+            <Bell size={20} />
+            <div>
+              <h2 className="settings-section-title font-14-18">
+                Notifications
+              </h2>
+              <p className="settings-section-description font-12-16">
+                Control which notifications you want to receive.
+              </p>
+            </div>
+          </div>
+
+          <div className="settings-toggle-row" style={{ marginBottom: "20px" }}>
+            <div>
+              <span className="settings-toggle-title font-14-18">
+                Activity Notifications
+              </span>
+              <p className="settings-toggle-description font-12-16">
+                Get notified when you're added to a workspace, collection, or
+                core block.
+              </p>
+            </div>
+
+            <Selector
+              filter={activityNotification}
+              setFilter={setActivityNotification}
+              options={[
+                { label: "Off", filter: "off" },
+                { label: "Push", filter: "push" },
+                { label: "Mail", filter: "mail" },
+              ]}
+            />
+          </div>
+
+          <div className="settings-toggle-row">
+            <div>
+              <span className="settings-toggle-title font-14-18">
+                Chat Notifications
+              </span>
+              <p className="settings-toggle-description font-12-16">
+                Receive notifications for new messages and chat activity.
+              </p>
+            </div>
+
+            <input
+              type="checkbox"
+              checked={chatNotifications}
+              onChange={() => setChatNotifications(!chatNotifications)}
+            />
+          </div>
+
+          <div className="settings-toggle-row">
+            <div>
+              <span className="settings-toggle-title font-14-18">
+                Comment Notifications
+              </span>
+              <p className="settings-toggle-description font-12-16">
+                Receive notifications when someone comments on your posts.
+              </p>
+            </div>
+
+            <input
+              type="checkbox"
+              checked={commentNotifications}
+              onChange={() => setCommentNotifications(!commentNotifications)}
+            />
+          </div>
+
+          <button
+            disabled={loadingType !== ""}
+            onClick={handlePushUpdate}
+            className="settings-primary-button mar-t-12-18"
+          >
+            {loadingType === "UpdatePush" ? (
+              <Loader color="#fff" size="15" />
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+        </section>
+
+        <section className="settings-section padd-12-24">
+          <div className="settings-section-header">
             <Palette size={20} />
             <div>
               <h2 className="settings-section-title font-14-18">Appearance</h2>
@@ -343,10 +469,15 @@ const Settings = () => {
               </p>
             </div>
           </div>
-          <div
-            className="settings-transfer-owner-field mar-b-14-20"
-            style={{ marginBottom: "20px" }}
-          >
+          <div className="settings-toggle-row" style={{ marginBottom: "20px" }}>
+            <div>
+              <span className="settings-toggle-title font-14-18">
+                Image Mode
+              </span>
+              <p className="settings-toggle-description font-12-16">
+                Switch between cover and contain modes for all images
+              </p>
+            </div>
             <Selector
               filter={imageMode}
               setFilter={setImageMode}
