@@ -25,21 +25,26 @@ import { useEffect } from "react";
 
 const App = () => {
   
-  useEffect(() => {
-    initMessaging(Push_Notification_Api);
-    const unsubscribe = onMessageListener(async (payload) => {
-      const { title, body, image } = payload.notification;
-      const link = payload.data?.clickUrl || "/";
-      const registration = await navigator.serviceWorker.ready;
-      registration.showNotification(title, {
-        body,
-        icon: image,
-        data: { clickUrl: link },
-      });
-    }, Push_Notification_Api);
+useEffect(() => {
+  initMessaging(Push_Notification_Api);
 
-    return () => unsubscribe();
-  }, []);
+  const unsubscribe = onMessageListener(async (payload) => {
+    const { title, body, image, clickUrl } = payload.data || {};
+
+    const registration = await navigator.serviceWorker.ready;
+
+    registration.showNotification(title, {
+      body,
+      icon: image,
+      badge: image,
+      data: {
+        clickUrl,
+      },
+    });
+  });
+
+  return () => unsubscribe();
+}, []);
 
   return (
     <Routes>
