@@ -17,8 +17,10 @@ import { toast } from "sonner";
 import { ProfileByName } from "../utils/Helper";
 import TopBar from "../components/TopBar";
 import { Selector } from "../components/CustomComponents";
+import { useLocation } from "react-router-dom";
 
 const Settings = () => {
+  const location = useLocation();
   const { theme, toggleTheme, setImageMode, imageMode } = useTheme();
   const { currentUser, loading } = useAuth();
   const [loadingType, setLoadingType] = useState("");
@@ -50,6 +52,21 @@ const Settings = () => {
       setCommentNotifications(currentUser.commentNotifications || false);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+        element.focus?.();
+      }
+    }
+  }, [location]);
 
   const handleProfileUpdate = async () => {
     if (!currentUser) return;
@@ -377,7 +394,10 @@ const Settings = () => {
           </button>
         </section>
 
-        <section className="settings-section padd-12-24">
+        <section
+          id="notifications"
+          className="settings-section padd-12-24"
+        >
           <div className="settings-section-header">
             <Bell size={20} />
             <div>

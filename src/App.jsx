@@ -24,6 +24,7 @@ import TestingPage from "./pages/TestingPage.jsx";
 import { useEffect } from "react";
 
 const App = () => {
+  
   useEffect(() => {
     initMessaging(Push_Notification_Api);
     const unsubscribe = onMessageListener(async (payload) => {

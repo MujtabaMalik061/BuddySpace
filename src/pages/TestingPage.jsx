@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { collection, getDocs, doc, writeBatch } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import {
@@ -6,13 +6,18 @@ import {
   requestPermission,
 } from "../utils/extensions/Notification.extensions.js";
 import { Push_Notification_Api } from "../services/Constants.js";
-import { sendNotification } from "dev-push-notification";
+import { sendNotification, sendMail } from "dev-push-notification";
 import { toast } from "sonner";
 
 const TestingPage = () => {
   const [loading, setLoading] = useState("");
   const [token, setToken] = useState(null);
   const [mail, setMail] = useState("");
+  const [customToken, setCustomToken] = useState("");
+
+  useEffect(() => {
+    setToken(customToken);
+  }, [customToken]);
 
   const storeToken = async () => {
     setLoading("getToken");
@@ -93,26 +98,18 @@ const TestingPage = () => {
   const handleSendMail = async () => {
     try {
       setLoading("sendMail");
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/send-mail`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: mail,
-          subject: "Test Email",
-          html: `
-            <h2>Hello!</h2>
-            <p>This is a test email from BuddySpace.</p>
-          `,
-        }),
+      const res = await sendMail({
+        apiKey: Push_Notification_Api,
+        from: "Buddy Space",
+        mails: ["moonawan0071@gmail.com", "malikmoon.developer061@gmail.com"],
+        subject: "Welcome Email",
+        htmlContent: `
+    <h1>Hello!</h1>
+    <p>Welcome to our platform.</p>
+  `,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message);
-      }
+      console.log("response from mail api:", res);
 
       toast.success("Mail sent successfully");
     } catch (err) {
@@ -123,29 +120,130 @@ const TestingPage = () => {
     }
   };
 
+  const handleAddFieldsToAllUsers = async () => {
+    try {
+      setLoading("addFields");
+
+      const snapshot = await getDocs(collection(db, "Users"));
+
+      const batch = writeBatch(db);
+
+      snapshot.docs.forEach((docSnap) => {
+        batch.update(docSnap.ref, {
+          activityNotification: "off",
+          chatNotifications: false,
+          commentNotifications: false,
+        });
+      });
+
+      await batch.commit();
+
+      console.log(
+        `Updated ${snapshot.docs.length} user documents successfully`,
+      );
+    } catch (error) {
+      console.error("Error updating users:", error);
+    } finally {
+      setLoading("");
+    }
+  };
+
   return (
-    <div>
-      <button onClick={RemoveALLTokens}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "start",
+        gap: "10px",
+        padding: "10px",
+        flexWrap: "wrap",
+      }}
+    >
+      <button
+        className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+        onClick={handleAddFieldsToAllUsers}
+      >
+        {loading === "addFields"
+          ? "Adding fields..."
+          : "Add fields to all users"}
+      </button>
+      <button
+        className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+        onClick={RemoveALLTokens}
+      >
         {loading === "removealltokens"
           ? "All users tokens removing..."
           : "Remove token from all users"}
       </button>
-      <button onClick={requestPermission}>requestPermission</button>
-      <button disabled={loading} onClick={storeToken}>
+
+      <button
+        className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+        onClick={requestPermission}
+      >
+        requestPermission
+      </button>
+      <button
+        className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+        disabled={loading}
+        onClick={storeToken}
+      >
         {loading === "getToken" ? "Getting..." : "Get token"}
       </button>
       <p>{token}</p>
-      <button disabled={loading} onClick={handleSendPush}>
-        {loading === "sendPush" ? "sending..." : "Send Push"}
-      </button>
-
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <input
-          placeholder="email"
-          value={mail}
-          onChange={(e) => setMail(e.target.value)}
-        />
-        <button onClick={handleSendMail}>Send Mail</button>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "start",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
+        <div
+          style={{
+            boxShadow: "var(--shadow-hover-sm)",
+            borderRadius: "8px",
+            borderTop: "none",
+          }}
+          className="chat-input-bar"
+        >
+          <input
+            type="text"
+            className="chat-input"
+            placeholder="Add custom token for push"
+            value={customToken}
+            onChange={(e) => setCustomToken(e.target.value)}
+          />
+          <button
+            // icon chat-send-btn
+            className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+            disabled={loading}
+            onClick={handleSendPush}
+          >
+            {loading === "sendPush" ? "sending..." : "Send Push"}
+          </button>
+        </div>
+        <div
+          style={{
+            boxShadow: "var(--shadow-hover-sm)",
+            borderRadius: "8px",
+            borderTop: "none",
+          }}
+          className="chat-input-bar"
+        >
+          <input
+            className="chat-input"
+            placeholder="email"
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
+          />
+          <button
+            className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+            onClick={handleSendMail}
+          >
+            Send Mail
+          </button>
+        </div>
       </div>
     </div>
   );
