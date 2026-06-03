@@ -4,7 +4,6 @@ import {
   getDocs,
   doc,
   writeBatch,
-  updateDoc,
 } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import {
@@ -48,8 +47,9 @@ const TestingPage = () => {
         apiKey: Push_Notification_Api,
         title: "Test",
         body: "testing push",
-        icon: "https://unicodetech-two.vercel.app/SiteIcon.png",
+        icon: "https://buddy-space.vercel.app/SiteIcon.png",
         fcmTokens: [token],
+        link: "http://localhost:5173/testing",
       });
       console.log("Push notification sent:", push);
     } catch (err) {

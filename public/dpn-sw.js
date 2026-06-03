@@ -5,7 +5,7 @@ importScripts(
   "https://www.gstatic.com/firebasejs/10.3.0/firebase-messaging-compat.js",
 );
 
-const API_LINK = "https://unicodetech-two.vercel.app";
+const API_LINK = "https://buddy-space.vercel.app";
 
 const decodeConfig = (encoded) => {
   return atob(encoded);

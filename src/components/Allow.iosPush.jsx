@@ -98,7 +98,7 @@ const AllowIosPush = () => {
           "You have turned off all notifications. Please enable it to receive notifications.",
         buttonLabel: "Go to Settings",
         buttonActions: () => {
-          navigate("/settings/#notifications");
+          navigate("/settings#notifications");
         },
       };
     }
