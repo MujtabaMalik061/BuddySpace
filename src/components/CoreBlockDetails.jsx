@@ -7,7 +7,11 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import Loader from "./Loader";
 import { useAuth } from "../context/AuthContext";
-import { addCommentToCoreBlock } from "../services/CoreBlocksHelper";
+import {
+  addCommentToCoreBlock,
+  updateComment,
+  deleteComment,
+} from "../services/CoreBlocksHelper";
 import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
 import { IMAGES } from "../services/Constants";
 import { getUserNameById } from "../utils/Helper";
@@ -254,6 +258,10 @@ const CoreBlockDetails = () => {
           AtSubmit={() =>
             addCommentToCoreBlock(coreblockId, currentUser, comment)
           }
+          onUpdateComment={(commentId, newComment) =>
+            updateComment(coreblockId, commentId, newComment)
+          }
+          onDeleteComment={(commentId) => deleteComment(coreblockId, commentId)}
         />
       </div>
     </>

@@ -14,6 +14,7 @@ import {
   limit,
   startAfter,
   getDocs,
+  getDoc,
 } from "firebase/firestore";
 import { generateCustomId } from "../utils/Helper";
 import { toast } from "sonner";
@@ -145,8 +146,10 @@ export const addCommentToCollection = async (
   const collectionRef = doc(db, "Collections", collectionId);
 
   try {
+    const commentId = crypto.randomUUID();
     await updateDoc(collectionRef, {
       comments: arrayUnion({
+        commentId,
         createdBy: {
           id: currentUser.id,
           name: currentUser.fullName,
@@ -158,6 +161,64 @@ export const addCommentToCollection = async (
     console.log("Comment added successfully!");
   } catch (error) {
     console.error("Failed to add comment:", error);
+    throw error;
+  }
+};
+
+export const updateComment = async (collectionId, commentId, newComment) => {
+  try {
+    const collectionRef = doc(db, "Collections", collectionId);
+    const collectionSnap = await getDoc(collectionRef);
+
+    if (!collectionSnap.exists()) {
+      throw new Error("Collection not found");
+    }
+
+    const data = collectionSnap.data();
+
+    const updatedComments = (data.comments || []).map((comment) =>
+      comment.commentId === commentId
+        ? {
+            ...comment,
+            comment: newComment.trim(),
+            updatedAt: new Date(),
+          }
+        : comment,
+    );
+
+    await updateDoc(collectionRef, {
+      comments: updatedComments,
+    });
+
+    console.log("Comment updated successfully");
+  } catch (error) {
+    console.error("Failed to update comment:", error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (collectionId, commentId) => {
+  try {
+    const collectionRef = doc(db, "Collections", collectionId);
+    const collectionSnap = await getDoc(collectionRef);
+
+    if (!collectionSnap.exists()) {
+      throw new Error("Collection not found");
+    }
+
+    const data = collectionSnap.data();
+
+    const updatedComments = (data.comments || []).filter(
+      (comment) => comment.commentId !== commentId,
+    );
+
+    await updateDoc(collectionRef, {
+      comments: updatedComments,
+    });
+
+    console.log("Comment deleted successfully");
+  } catch (error) {
+    console.error("Failed to delete comment:", error);
     throw error;
   }
 };

@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import {
   addCommentToWorkSpace,
   listenWorkSpaceDetailsById,
+  updateComment,
+  deleteComment,
 } from "../services/WorkSpaceSettingsHelper";
 import {
   joinPublicWorkSpace,
@@ -115,7 +117,9 @@ const WorkSpaceDetails = () => {
                 {currentUser?.id === workSpaceDetails?.createdBy ? (
                   <button
                     onClick={() =>
-                      navigate(`/workspace-settings/${workSpaceDetails?.workspaceId}`)
+                      navigate(
+                        `/workspace-settings/${workSpaceDetails?.workspaceId}`,
+                      )
                     }
                     className="workspaces-settings-btn"
                   >
@@ -169,6 +173,12 @@ const WorkSpaceDetails = () => {
               comment={comment}
               AtSubmit={() =>
                 addCommentToWorkSpace(workspaceId, currentUser, comment)
+              }
+              onUpdateComment={(commentId, newComment) =>
+                updateComment(workspaceId, commentId, newComment)
+              }
+              onDeleteComment={(commentId) =>
+                deleteComment(workspaceId, commentId)
               }
             />
           </>

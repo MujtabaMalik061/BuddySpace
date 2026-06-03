@@ -7,11 +7,15 @@ import {
   ChevronUp,
   Search,
   SendHorizonal,
+  SquarePen,
+  Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import Loader from "./Loader";
 import { formatAgo, formateDate } from "../utils/Helper";
 import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
+import { createPortal } from "react-dom";
 
 export const Selector = ({
   disabled = false,
@@ -162,7 +166,7 @@ export const IconSelector = ({
 };
 
 export const SearchInput = ({
-  disabled=false,
+  disabled = false,
   value,
   setValue,
   placeholder = "Search...",
@@ -258,20 +262,119 @@ export const CommentsArea = ({
   setComment = () => {},
   comment = "",
   AtSubmit = async () => {},
+  onUpdateComment = async () => {},
+  onDeleteComment = async () => {},
 }) => {
+  const { currentUser } = useAuth();
+
   const [isComment, setIsComment] = useState(false);
   const [isCommentActive, setIsCommentActive] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
+  const [editingComment, setEditingComment] = useState(null);
+  const [editText, setEditText] = useState("");
+
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    item: null,
+  });
+
+  useEffect(() => {
+    const handleClick = () => {
+      setContextMenu({
+        visible: false,
+        x: 0,
+        y: 0,
+        item: null,
+      });
+    };
+
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
+
+  const closeContextMenu = () => {
+    setContextMenu({
+      visible: false,
+      x: 0,
+      y: 0,
+      item: null,
+    });
+  };
+
+  const handleCommentContextMenu = (e, comment) => {
+    e.preventDefault();
+
+    const ownerId =
+      comment?.createdBy?.id ||
+      comment?.createdBy?._id ||
+      comment?.createdBy?.uid;
+
+    const currentUserId =
+      currentUser?.id || currentUser?._id || currentUser?.uid;
+
+    if (ownerId !== currentUserId) return;
+
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      item: comment,
+    });
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingComment(comment.commentId);
+    setEditText(comment.comment);
+    closeContextMenu();
+  };
+
+  const handleDeleteComment = async (id) => {
+    try {
+      await onDeleteComment(id);
+      toast.success("Comment deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete comment");
+    }
+  };
+
+  const handleSaveEdit = async (id) => {
+    if (!editText.trim()) {
+      return toast.error("Comment is required");
+    }
+    try {
+      await onUpdateComment(id, editText);
+      setEditingComment(null);
+      setEditText("");
+      toast.success("Comment updated successfully.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update comment");
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!comment) return toast.error("comment is required!!");
+    if (!comment.trim()) {
+      return toast.error("Comment is required");
+    }
+
     setIsCommentActive(true);
+
     await new Promise((resolve) => setTimeout(resolve, 800));
+
     setIsCommentLoading(true);
 
     try {
       await AtSubmit();
+
       setComment("");
+
       toast.success("Comment added successfully.");
     } catch (err) {
       console.error(err);
@@ -279,6 +382,7 @@ export const CommentsArea = ({
     } finally {
       setIsCommentLoading(false);
       setIsCommentActive(false);
+      setIsComment(false);
     }
   };
 
@@ -287,10 +391,9 @@ export const CommentsArea = ({
       <div className="workspace-detail-comment-header-container">
         <div className="workspace-detail-comment-header">
           <h3>Comments</h3>
+
           <button
-            onClick={() => {
-              setIsComment(!isComment);
-            }}
+            onClick={() => setIsComment(!isComment)}
             className="comment-post-btn"
           >
             Post
@@ -299,10 +402,12 @@ export const CommentsArea = ({
             </span>
           </button>
         </div>
+
         {isComment && (
           <div className="write-comment-container">
             <div className="settings-field">
               <label className="settings-label">Write a Comment</label>
+
               <textarea
                 className="settings-textarea"
                 placeholder="Write your Comment..."
@@ -310,9 +415,11 @@ export const CommentsArea = ({
                 onChange={(e) => setComment(e.target.value)}
               />
             </div>
+
             <button
               onClick={handleSubmit}
               className={`${isCommentActive ? "active" : ""} comment-send-btn`}
+              disabled={isCommentLoading || isCommentActive}
             >
               {isCommentLoading ? (
                 <Loader color="#fff" size="24" />
@@ -328,14 +435,19 @@ export const CommentsArea = ({
           </div>
         )}
       </div>
+
       <div className="workspace-detail-comments-container mar-t-20-40">
         {comments?.length > 0 ? (
           [...comments]
-            .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
+            .sort(
+              (a, b) =>
+                (b?.createdAt?.seconds || 0) - (a?.createdAt?.seconds || 0),
+            )
             .map((comment, index) => (
               <div
-                key={index}
+                key={comment.id || index}
                 className="workspace-comment-card padd-duo-6-10-and-8-12 mar-b-8-12"
+                onContextMenu={(e) => handleCommentContextMenu(e, comment)}
               >
                 <div className="workspace-comment-header">
                   <strong className="font-12-16">
@@ -343,19 +455,87 @@ export const CommentsArea = ({
                       comment.createdBy?.name ||
                       "Anonymous"}
                   </strong>
+
                   <span className="workspace-comment-date font-10-12">
                     {formatAgo(comment?.createdAt)}
                   </span>
                 </div>
-                <p className="workspace-comment-body font-10-12">
-                  {comment.comment}
-                </p>
+
+                {editingComment === comment.commentId ? (
+                  <>
+                    <textarea
+                      style={{ width: "100%" }}
+                      className="settings-textarea"
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                    />
+
+                    <div className="collection-modal-actions">
+                      <button
+                        className="collection-btn-secondary"
+                        onClick={() => {
+                          setEditingComment(null);
+                          setEditText("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="collection-btn-primary"
+                        onClick={() => handleSaveEdit(comment.commentId)}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <p className="workspace-comment-body font-10-12">
+                    {comment.comment}
+                  </p>
+                )}
               </div>
             ))
         ) : (
           <p className="no-data">No Comments found.</p>
         )}
       </div>
+
+      {contextMenu.visible &&
+        createPortal(
+          <div
+            className="collection-card-menu-container"
+            style={{
+              position: "fixed",
+              top: contextMenu.y,
+              left: contextMenu.x,
+              zIndex: 999999,
+            }}
+          >
+            <div
+              className="collection-card-menu-item success"
+              onClick={() => handleEditComment(contextMenu.item)}
+            >
+              <span className="icon">
+                <SquarePen size={14} />
+              </span>
+              Edit Comment
+            </div>
+
+            <div
+              className="collection-card-menu-item danger"
+              onClick={async () => {
+                await handleDeleteComment(contextMenu.item.commentId);
+                closeContextMenu();
+              }}
+            >
+              <span className="icon">
+                <Trash2 size={14} />
+              </span>
+              Delete Comment
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

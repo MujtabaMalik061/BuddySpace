@@ -7,14 +7,14 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import Loader from "./Loader";
 import { useAuth } from "../context/AuthContext";
-import { addCommentToCollection } from "../services/CollectionsHelper";
+import { addCommentToCollection, deleteComment, updateComment } from "../services/CollectionsHelper";
 import { getUsersMapByIds } from "../services/WorkSpaceSettingsHelper";
 import { IMAGES } from "../services/Constants";
 import { getUserNameById } from "../utils/Helper";
 import { useTheme } from "../context/ThemeContext";
 
 const CollectionDetails = () => {
-    const { setImageMode, imageMode } = useTheme();
+  const { setImageMode, imageMode } = useTheme();
   const { collectionId } = useParams();
   const { currentUser } = useAuth();
   const [item, setItem] = useState(null);
@@ -179,6 +179,10 @@ const CollectionDetails = () => {
           AtSubmit={() =>
             addCommentToCollection(collectionId, currentUser, comment)
           }
+          onUpdateComment={(commentId, newComment) =>
+            updateComment(collectionId, commentId, newComment)
+          }
+          onDeleteComment={(commentId) => deleteComment(collectionId, commentId)}
         />
       </div>
     </>

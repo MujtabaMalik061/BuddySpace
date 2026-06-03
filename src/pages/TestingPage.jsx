@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, doc, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  writeBatch,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import {
   handleGetToken,
