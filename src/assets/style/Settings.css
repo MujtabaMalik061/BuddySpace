@@ -63,7 +63,7 @@
   flex-shrink: 0;
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-inverse);
+  color: var(--text-primary);
   overflow: hidden;
 }
 

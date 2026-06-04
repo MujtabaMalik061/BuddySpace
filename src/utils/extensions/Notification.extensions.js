@@ -1,4 +1,4 @@
-import { getToken, sendNotification } from "dev-push-notification";
+import { getToken, sendMail, sendNotification } from "dev-push-notification";
 import { Push_Notification_Api } from "../../services/Constants.js";
 import {
   collection,
@@ -7,8 +7,6 @@ import {
   getDocs,
   getDoc,
   updateDoc,
-  serverTimestamp,
-  setDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
@@ -40,31 +38,36 @@ export const handleSendNotification = async ({
   title = "",
   body = "",
   link = "",
+  subject = "",
+  htmlContent = "",
   userIds = [],
   isByAuth = false,
+  checkType = "activity",
 }) => {
   try {
     if (!userIds?.length) return;
 
     const allTokens = [];
+    const emails = [];
 
     const usersData = await Promise.all(
       userIds.map(async (userId) => {
         let data = null;
 
-        if (isByAuth) {
-          const ref = doc(db, "UserIndex", userId);
+        if (!isByAuth) {
+          const ref = doc(db, "Users", userId);
           const snap = await getDoc(ref);
 
           if (!snap.exists()) return null;
           data = snap.data();
         } else {
           const q = query(
-            collection(db, "UserIndex"),
-            where("docId", "==", userId),
+            collection(db, "Users"),
+            where("authId", "==", userId),
           );
 
           const snap = await getDocs(q);
+
           if (snap.empty) return null;
 
           data = snap.docs[0].data();
@@ -76,12 +79,52 @@ export const handleSendNotification = async ({
 
     usersData.forEach((user) => {
       if (!user) return;
-      if (user.pushEnabled === false) return;
 
-      if (Array.isArray(user.fcmTokens)) {
-        allTokens.push(...user.fcmTokens);
+      if (checkType === "activity") {
+        const setting = user.activityNotification;
+
+        if (setting === "off") return;
+
+        if (
+          (setting === "push" || setting === "both") &&
+          Array.isArray(user.fcmTokens)
+        ) {
+          allTokens.push(...user.fcmTokens);
+        }
+
+        if ((setting === "mail" || setting === "both") && user.email) {
+          emails.push(user.email);
+        }
+
+        return;
+      }
+
+      if (checkType === "chat") {
+        if (user.chatNotifications !== true) return;
+        if (Array.isArray(user.fcmTokens)) {
+          allTokens.push(...user.fcmTokens);
+        }
+
+        return;
+      }
+
+      if (checkType === "comment") {
+        if (user.commentNotifications !== true) return;
+        if (Array.isArray(user.fcmTokens)) {
+          allTokens.push(...user.fcmTokens);
+        }
       }
     });
+
+    if (checkType === "activity" && emails.length > 0) {
+      await sendMail({
+        apiKey: Push_Notification_Api,
+        from: "Buddy Space",
+        mails: [...new Set(emails)],
+        subject,
+        htmlContent,
+      });
+    }
 
     if (allTokens.length > 0) {
       await sendNotification({

@@ -112,6 +112,12 @@
 }
 
 .collection-thumb img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+.collection-thumb {
   width: 100%;
   height: 160px;
   object-fit: cover;

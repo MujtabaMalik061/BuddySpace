@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { auth, db } from "../utils/FirebaseConfig";
 import { handleFtechWorkSpaces } from "../services/WorkSpaceHelper";
+import { handleGetToken, addFcmToken } from "../utils/extensions/Notification.extensions";
 
 const AuthContext = createContext();
 
@@ -49,6 +50,20 @@ export const AuthProvider = ({ children }) => {
 
     return () => unsubscribe();
   }, []);
+
+    useEffect(() => {
+      if (!currentUser?.id) return;
+      const syncToken = async () => {
+        const indexRef = doc(db, "Users", currentUser?.id);
+        const token = await handleGetToken();
+
+        if (token) {
+          await addFcmToken(indexRef, token);
+        }
+      };
+
+      syncToken();
+    }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser) return;

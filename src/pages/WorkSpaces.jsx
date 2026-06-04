@@ -19,6 +19,11 @@ import {
 } from "../services/WorkSpaceHelper";
 import { db } from "../utils/FirebaseConfig";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { handleSendNotification } from "../utils/extensions/Notification.extensions";
+import {
+  workspaceInviteAccepted,
+  workspaceInviteDeclined,
+} from "../services/email.services";
 
 const WorkSpaces = () => {
   const navigate = useNavigate();
@@ -65,9 +70,36 @@ const WorkSpaces = () => {
 
   const handleDeclineInvite = async (inviteId) => {
     if (!inviteId) return;
+
     try {
       setDeclineLoading(inviteId);
-      await deleteDoc(doc(db, "Invites", inviteId));
+
+      const inviteRef = doc(db, "Invites", inviteId);
+      const inviteSnap = await getDoc(inviteRef);
+
+      if (!inviteSnap.exists()) {
+        console.error("Invite not found");
+        return;
+      }
+
+      const invite = inviteSnap.data();
+
+      handleSendNotification({
+        title: "Invitation Declined",
+        body: `${currentUser.fullName} declined your invitation to join ${invite.workSpace.name}`,
+        link: "/members",
+        subject: "Workspace Invitation Declined",
+        htmlContent: workspaceInviteDeclined({
+          invitedUser: currentUser,
+          workspace: invite.workSpace,
+        }),
+        userIds: [invite.invitedBy.userId],
+        isByAuth: false,
+        checkType: "activity",
+      });
+
+      await deleteDoc(inviteRef);
+
       setWorkSpaces((prev) => prev.filter((w) => w.id !== inviteId));
     } catch (err) {
       console.error("Decline invite error:", err);
@@ -94,6 +126,17 @@ const WorkSpaces = () => {
           members: [...wsData.members, currentUser.id],
         });
       }
+      handleSendNotification({
+        title: "Invitation Accepted",
+        body: `${currentUser.fullName} accepted your invitation to join ${invite.workSpace.name}`,
+        link: "/members",
+        subject: "Workspace Invitation Accepted",
+        htmlContent: workspaceInviteAccepted({
+          invitedUser: currentUser,
+          workspace: invite.workSpace,
+        }),
+        userIds: [invite.invitedBy.userId],
+      });
 
       await deleteDoc(doc(db, "Invites", invite.id));
 
@@ -108,7 +151,6 @@ const WorkSpaces = () => {
   const sortedWorkspaces = workspaces.sort((a, b) => {
     return b.createdAt.seconds - a.createdAt.seconds;
   });
-  
 
   return (
     <>

@@ -83,7 +83,12 @@ const Chat = () => {
     if (!value.trim()) return;
 
     try {
-      await sendChatMessage(selectedWorkSpaceId, currentUser.id, value);
+      await sendChatMessage(
+        selectedWorkSpaceId,
+        currentUser.id,
+        value,
+        currentUser,
+      );
       setValue("");
     } catch (err) {
       console.error("Send message error:", err);

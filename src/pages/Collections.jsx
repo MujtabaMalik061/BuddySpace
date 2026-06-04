@@ -27,6 +27,9 @@ import { IMAGES } from "../services/Constants";
 import { SearchInput } from "../components/CustomComponents";
 import { useDebounce } from "../utils/hooks/useDebounce";
 import { useTheme } from "../context/ThemeContext";
+import { getWorkSpaceDetailsById } from "../services/WorkSpaceSettingsHelper";
+import { handleSendNotification } from "../utils/extensions/Notification.extensions";
+import { collectionItemAddedEmail } from "../services/email.services";
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -143,6 +146,30 @@ const Collections = () => {
       };
 
       await addCollectionItem(data);
+      const workspaceData = await getWorkSpaceDetailsById(
+        currentUser,
+        workSpaceId,
+      );
+      const recipientIds =
+        workspaceData.members?.filter(
+          (memberId) => memberId !== currentUser.id,
+        ) || [];
+      const collectionMailContent = collectionItemAddedEmail({
+        addedBy: currentUser.fullName,
+        workspace: workspaceData?.name,
+        item: data,
+      });
+      if (recipientIds.length) {
+        handleSendNotification({
+          title: "New Collection Item",
+          body: `${currentUser.fullName} added "${form.title}" to ${workspaceData.name}`,
+          link: `/workspaces/${workSpaceId}`,
+          subject: "New Collection Item",
+          htmlContent: collectionMailContent,
+          userIds: recipientIds,
+          checkType: "activity",
+        });
+      }
       setForm({ title: "", description: "", thumbnail: "", link: "" });
       setThumbnailLink("");
       setLocalImageFile(null);

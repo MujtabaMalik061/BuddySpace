@@ -20,6 +20,8 @@ import {
 import { toast } from "sonner";
 import { generateCustomId, ProfileByName } from "../utils/Helper";
 import { useTheme } from "../context/ThemeContext";
+import { handleSendNotification } from "../utils/extensions/Notification.extensions";
+import { workSpaceInvite } from "../services/email.services";
 
 const Members = () => {
   const { imageMode } = useTheme();
@@ -119,6 +121,17 @@ const Members = () => {
         },
         inviteId: customId,
         createdAt: Timestamp.now(),
+      });
+      const inviteMailContent = workSpaceInvite({ currentUser, wsData });
+      handleSendNotification({
+        title: "Workspace Invitation",
+        body: `You have been invited to join the workspace ${wsData.name} by ${currentUser.fullName}`,
+        link: "/workspaces?tab=invites",
+        subject: "Workspace Invitation",
+        htmlContent: inviteMailContent,
+        userIds: [userId],
+        isByAuth: false,
+        checkType: "activity",
       });
 
       toast.success("Invite sent successfully");
