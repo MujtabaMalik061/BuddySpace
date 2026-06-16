@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  collection,
-  getDocs,
-  doc,
-  writeBatch,
-} from "firebase/firestore";
+import { collection, getDocs, doc, writeBatch } from "firebase/firestore";
 import { db } from "../utils/FirebaseConfig";
 import {
   handleGetToken,
@@ -14,15 +9,70 @@ import { Push_Notification_Api } from "../services/Constants.js";
 import { sendNotification, sendMail } from "dev-push-notification";
 import { toast } from "sonner";
 
+const Google_Key = "AIzaSyByB-GDZGGf6rcTw9ed2d_gwd-G7kZUnrQ";
+
 const TestingPage = () => {
   const [loading, setLoading] = useState("");
   const [token, setToken] = useState(null);
   const [mail, setMail] = useState("");
   const [customToken, setCustomToken] = useState("");
+  const [url, setUrl] = useState("");
+  const [youtubeData, setYoutubeData] = useState(null);
 
   useEffect(() => {
     setToken(customToken);
   }, [customToken]);
+  const extractChannelId = (input) => {
+    if (!input) return null;
+    if (input.startsWith("UC") && input.length > 10) return input;
+    const match = input.match(/(UC[a-zA-Z0-9_-]{20,})/);
+    return match ? match[0] : null;
+  };
+
+  const handleGetYoutubeData = async () => {
+    setLoading("youtube");
+
+    try {
+      const channelId = extractChannelId(url);
+
+      if (!channelId) {
+        toast.error("Please enter a valid YouTube Channel ID");
+        return;
+      }
+
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelId}&key=${Google_Key}`,
+      );
+
+      const data = await res.json();
+      console.log("data----->", data);
+
+      if (!data.items || data.items.length === 0) {
+        toast.error("Channel not found");
+        return;
+      }
+
+      const channel = data.items[0];
+      console.log("channel----->", channel);
+
+      const result = {
+        title: channel.snippet.title,
+        subscribers: channel.statistics.subscriberCount,
+        views: channel.statistics.viewCount,
+        videos: channel.statistics.videoCount,
+        thumbnail: channel.snippet.thumbnails.medium.url,
+      };
+
+      setYoutubeData(result);
+
+      toast.success("YouTube data loaded");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch YouTube data");
+    } finally {
+      setLoading("");
+    }
+  };
 
   const storeToken = async () => {
     setLoading("getToken");
@@ -205,6 +255,39 @@ const TestingPage = () => {
           flexWrap: "wrap",
         }}
       >
+        <div
+          style={{
+            boxShadow: "var(--shadow-hover-sm)",
+            borderRadius: "8px",
+            borderTop: "none",
+          }}
+          className="chat-input-bar"
+        >
+          <input
+            type="text"
+            className="chat-input"
+            placeholder="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+          <button
+            // icon chat-send-btn
+            className="refresh-btn hide-mobile-400 padd-duo-10-14-and-14-28 font-12-16"
+            disabled={loading}
+            onClick={handleGetYoutubeData}
+          >
+            {loading === "youtube" ? "geting..." : "Get Data"}
+          </button>
+        </div>
+        {youtubeData && (
+          <div style={{ marginTop: "20px" }}>
+            <img src={youtubeData.thumbnail} width={80} />
+            <h3>{youtubeData.title}</h3>
+            <p>Subscribers: {youtubeData.subscribers}</p>
+            <p>Views: {youtubeData.views}</p>
+            <p>Videos: {youtubeData.videos}</p>
+          </div>
+        )}
         <div
           style={{
             boxShadow: "var(--shadow-hover-sm)",
