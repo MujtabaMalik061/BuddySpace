@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/apple/Desktop/Project/Uploads/BuddySpace -name \".DS_Store\" -not -path \"*/.git/*\" -delete)",
+      "Bash(git rm *)"
+    ]
+  }
+}
