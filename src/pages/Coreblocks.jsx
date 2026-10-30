@@ -7,6 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Plus, X, Image, ImageUp, MessageCircle, SquarePen, Trash2 } from "lucide-react";
+import { uploadByApi } from "../utils/UploadMedia";
 import Loader from "../components/Loader";
 import {
   addCoreBlockItem,
@@ -106,18 +107,8 @@ const Coreblocks = () => {
     try {
       let finalThumbnail = thumbnailLink;
       if (localImageFile) {
-        const formData = new FormData();
-        formData.append("image", localImageFile);
-        formData.append("workspaceId", workSpaceId);
-
-        const res = await fetch(
-          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
-          { method: "POST", body: formData },
-        );
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
-        finalThumbnail = data.url;
+        const result = await uploadByApi([localImageFile]);
+        finalThumbnail = result?.files?.[0]?.fileUrl ?? thumbnailLink;
       }
 
       const data = {
@@ -168,18 +159,8 @@ const Coreblocks = () => {
     try {
       let finalThumbnail = thumbnailLink;
       if (localImageFile) {
-        const formData = new FormData();
-        formData.append("image", localImageFile);
-        formData.append("workspaceId", workSpaceId);
-
-        const res = await fetch(
-          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
-          { method: "POST", body: formData },
-        );
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
-        finalThumbnail = data.url;
+        const result = await uploadByApi([localImageFile]);
+        finalThumbnail = result?.files?.[0]?.fileUrl ?? thumbnailLink;
       }
 
       await handleEditCoreBlockItem(isEdit, {

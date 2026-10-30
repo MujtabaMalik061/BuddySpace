@@ -30,6 +30,7 @@ import { useTheme } from "../context/ThemeContext";
 import { getWorkSpaceDetailsById } from "../services/WorkSpaceSettingsHelper";
 import { handleSendNotification } from "../utils/extensions/Notification.extensions";
 import { collectionItemAddedEmail } from "../services/email.services";
+import { uploadByApi } from "../utils/UploadMedia";
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -117,28 +118,15 @@ const Collections = () => {
     try {
       let finalThumbnail = thumbnailLink;
       if (localImageFile) {
-        const formData = new FormData();
-        formData.append("image", localImageFile);
-        formData.append("workspaceId", workSpaceId);
-
-        const res = await fetch(
-          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
-          {
-            method: "POST",
-            body: formData,
-          },
-        );
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
-        finalThumbnail = data.url;
+        const result = await uploadByApi([localImageFile]);
+        finalThumbnail = result?.files?.[0]?.fileUrl ?? thumbnailLink;
       }
 
       const data = {
         title: form.title,
         description: form.description,
         thumbnail: finalThumbnail,
+        
         link: form.link,
         comments: [],
         createdBy: currentUser?.id,
@@ -201,19 +189,8 @@ const Collections = () => {
     try {
       let finalThumbnail = thumbnailLink;
       if (localImageFile) {
-        const formData = new FormData();
-        formData.append("image", localImageFile);
-        formData.append("workspaceId", workSpaceId);
-
-        const res = await fetch(
-          `${import.meta.env.VITE_IMAGE_BACKEND}/addImage`,
-          { method: "POST", body: formData },
-        );
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
-        finalThumbnail = data.url;
+        const result = await uploadByApi([localImageFile]);
+        finalThumbnail = result?.files?.[0]?.fileUrl ?? thumbnailLink;
       }
 
       await handleEditCollectionItem(isEdit, {
