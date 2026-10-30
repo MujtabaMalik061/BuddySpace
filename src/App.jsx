@@ -20,7 +20,6 @@ import Coreblocks from "./pages/Coreblocks.jsx";
 import CoreBlockDetails from "./components/CoreBlockDetails.jsx";
 import { onMessageListener, initMessaging } from "dev-push-notification";
 import { Push_Notification_Api } from "./services/Constants.js";
-import TestingPage from "./pages/TestingPage.jsx";
 import { useEffect } from "react";
 
 const App = () => {
@@ -81,7 +80,6 @@ useEffect(() => {
           />
         </Route>
       </Route>
-      <Route path="/testing" element={<TestingPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
